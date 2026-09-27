@@ -42,80 +42,154 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
     ),
   ];
 
+  String _monthName(int month) {
+    const months = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ];
+
+    return months[month - 1];
+  }
+
   void showAddActivityDialog() {
     final titleController = TextEditingController();
     final placeController = TextEditingController();
     final descriptionController = TextEditingController();
 
+    DateTime selectedDate = DateTime(2026, 9, 25);
+
+    TimeOfDay selectedStartTime = const TimeOfDay(
+      hour: 16,
+      minute: 0,
+    );
+
+    TimeOfDay selectedEndTime = const TimeOfDay(
+      hour: 17,
+      minute: 0,
+    );
+
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: const Text('Add Activity'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: titleController,
-                  decoration: const InputDecoration(
-                    labelText: 'Activity Title',
-                    border: OutlineInputBorder(),
-                  ),
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              title: const Text('Add Activity'),
+
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: titleController,
+                      decoration: const InputDecoration(
+                        labelText: 'Activity Title',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    TextField(
+                      controller: placeController,
+                      decoration: const InputDecoration(
+                        labelText: 'Place',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    TextField(
+                      controller: descriptionController,
+                      decoration: const InputDecoration(
+                        labelText: 'Description',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    ListTile(
+                      leading: const Icon(Icons.calendar_today),
+                      title: const Text('Date'),
+                      subtitle: Text(
+                        '${selectedDate.day} '
+                            '${_monthName(selectedDate.month)} '
+                            '${selectedDate.year}',
+                      ),
+                      onTap: () async {
+                        final pickedDate = await showDatePicker(
+                          context: context,
+                          initialDate: selectedDate,
+                          firstDate: DateTime(2026),
+                          lastDate: DateTime(2030),
+                        );
+
+                        if (pickedDate != null) {
+                          setDialogState(() {
+                            selectedDate = pickedDate;
+                          });
+                        }
+                      },
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: placeController,
-                  decoration: const InputDecoration(
-                    labelText: 'Place',
-                    border: OutlineInputBorder(),
-                  ),
+              ),
+
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Cancel'),
                 ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: descriptionController,
-                  decoration: const InputDecoration(
-                    labelText: 'Description',
-                    border: OutlineInputBorder(),
-                  ),
+
+                ElevatedButton(
+                  onPressed: () {
+                    if (titleController.text.trim().isEmpty ||
+                        placeController.text.trim().isEmpty) {
+                      return;
+                    }
+
+                    setState(() {
+                      activities.add(
+                        Itinerary(
+                          id: DateTime.now()
+                              .millisecondsSinceEpoch
+                              .toString(),
+                          tripId: 'trip01',
+                          title: titleController.text.trim(),
+                          place: placeController.text.trim(),
+                          date:
+                          '${selectedDate.day} '
+                              '${_monthName(selectedDate.month)} '
+                              '${selectedDate.year}',
+                          startTime: '04:00 PM',
+                          endTime: '05:00 PM',
+                          description:
+                          descriptionController.text.trim(),
+                        ),
+                      );
+                    });
+
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Add Activity'),
                 ),
               ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                if (titleController.text.trim().isEmpty ||
-                    placeController.text.trim().isEmpty) {
-                  return;
-                }
-
-                setState(() {
-                  activities.add(
-                    Itinerary(
-                      id: DateTime.now().millisecondsSinceEpoch.toString(),
-                      tripId: 'trip01',
-                      title: titleController.text.trim(),
-                      place: placeController.text.trim(),
-                      date: '25 September 2026',
-                      startTime: '04:00 PM',
-                      endTime: '05:00 PM',
-                      description: descriptionController.text.trim(),
-                    ),
-                  );
-                });
-
-                Navigator.pop(context);
-              },
-              child: const Text('Add Activity'),
-            ),
-          ],
+            );
+          },
         );
       },
     );
@@ -124,8 +198,10 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
   void showEditActivityDialog(Itinerary activity) {
     final titleController =
     TextEditingController(text: activity.title);
+
     final placeController =
     TextEditingController(text: activity.place);
+
     final descriptionController =
     TextEditingController(text: activity.description);
 
@@ -134,6 +210,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
       builder: (context) {
         return AlertDialog(
           title: const Text('Edit Activity'),
+
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -145,7 +222,9 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
                     border: OutlineInputBorder(),
                   ),
                 ),
+
                 const SizedBox(height: 12),
+
                 TextField(
                   controller: placeController,
                   decoration: const InputDecoration(
@@ -153,7 +232,9 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
                     border: OutlineInputBorder(),
                   ),
                 ),
+
                 const SizedBox(height: 12),
+
                 TextField(
                   controller: descriptionController,
                   decoration: const InputDecoration(
@@ -164,6 +245,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
               ],
             ),
           ),
+
           actions: [
             TextButton(
               onPressed: () {
@@ -171,6 +253,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
               },
               child: const Text('Cancel'),
             ),
+
             ElevatedButton(
               onPressed: () {
                 if (titleController.text.trim().isEmpty ||
@@ -179,8 +262,12 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
                 }
 
                 setState(() {
-                  activity.title = titleController.text.trim();
-                  activity.place = placeController.text.trim();
+                  activity.title =
+                      titleController.text.trim();
+
+                  activity.place =
+                      placeController.text.trim();
+
                   activity.description =
                       descriptionController.text.trim();
                 });
@@ -201,9 +288,11 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
       builder: (context) {
         return AlertDialog(
           title: const Text('Delete Activity'),
+
           content: const Text(
             'Are you sure you want to delete this activity?',
           ),
+
           actions: [
             TextButton(
               onPressed: () {
@@ -211,6 +300,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
               },
               child: const Text('Cancel'),
             ),
+
             ElevatedButton(
               onPressed: () {
                 setState(() {
@@ -226,14 +316,17 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
       },
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Gujarat Trip'),
       ),
+
       body: ListView(
         padding: const EdgeInsets.all(16),
+
         children: [
           const Text(
             'Day 1',
@@ -242,7 +335,9 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
               fontWeight: FontWeight.bold,
             ),
           ),
+
           const SizedBox(height: 4),
+
           const Text(
             '25 September 2026',
             style: TextStyle(
@@ -250,25 +345,34 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
               fontSize: 16,
             ),
           ),
+
           const SizedBox(height: 20),
+
           for (final activity in activities)
             Card(
               margin: const EdgeInsets.only(bottom: 12),
+
               child: ListTile(
                 leading: const Icon(Icons.access_time),
+
                 title: Text(
                   activity.title,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+
                 subtitle: Text(
-                  '${activity.startTime} - ${activity.endTime}\n'
+                  '${activity.date}\n'
+                      '${activity.startTime} - ${activity.endTime}\n'
                       '${activity.place}',
                 ),
+
                 isThreeLine: true,
+
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
+
                   children: [
                     IconButton(
                       icon: const Icon(Icons.edit),
@@ -276,6 +380,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
                         showEditActivityDialog(activity);
                       },
                     ),
+
                     IconButton(
                       icon: const Icon(Icons.delete),
                       onPressed: () {
@@ -288,6 +393,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
             ),
         ],
       ),
+
       floatingActionButton: FloatingActionButton(
         onPressed: showAddActivityDialog,
         child: const Icon(Icons.add),
