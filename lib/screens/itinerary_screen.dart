@@ -195,6 +195,37 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
     );
   }
 
+  void deleteActivity(Itinerary activity) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Delete Activity'),
+          content: const Text(
+            'Are you sure you want to delete this activity?',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  activities.remove(activity);
+                });
+
+                Navigator.pop(context);
+              },
+              child: const Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -236,11 +267,22 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
                       '${activity.place}',
                 ),
                 isThreeLine: true,
-                trailing: IconButton(
-                  icon: const Icon(Icons.edit),
-                  onPressed: () {
-                    showEditActivityDialog(activity);
-                  },
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.edit),
+                      onPressed: () {
+                        showEditActivityDialog(activity);
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete),
+                      onPressed: () {
+                        deleteActivity(activity);
+                      },
+                    ),
+                  ],
                 ),
               ),
             ),
