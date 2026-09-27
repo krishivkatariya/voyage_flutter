@@ -61,6 +61,14 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
     return months[month - 1];
   }
 
+  String _formatTime(TimeOfDay time) {
+    final hour = time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod;
+    final minute = time.minute.toString().padLeft(2, '0');
+    final period = time.period == DayPeriod.am ? 'AM' : 'PM';
+
+    return '$hour:$minute $period';
+  }
+
   void showAddActivityDialog() {
     final titleController = TextEditingController();
     final placeController = TextEditingController();
@@ -120,6 +128,7 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
 
                     const SizedBox(height: 12),
 
+                    // DATE
                     ListTile(
                       leading: const Icon(Icons.calendar_today),
                       title: const Text('Date'),
@@ -139,6 +148,48 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
                         if (pickedDate != null) {
                           setDialogState(() {
                             selectedDate = pickedDate;
+                          });
+                        }
+                      },
+                    ),
+
+                    // START TIME
+                    ListTile(
+                      leading: const Icon(Icons.access_time),
+                      title: const Text('Start Time'),
+                      subtitle: Text(
+                        _formatTime(selectedStartTime),
+                      ),
+                      onTap: () async {
+                        final pickedTime = await showTimePicker(
+                          context: context,
+                          initialTime: selectedStartTime,
+                        );
+
+                        if (pickedTime != null) {
+                          setDialogState(() {
+                            selectedStartTime = pickedTime;
+                          });
+                        }
+                      },
+                    ),
+
+                    // END TIME
+                    ListTile(
+                      leading: const Icon(Icons.access_time_filled),
+                      title: const Text('End Time'),
+                      subtitle: Text(
+                        _formatTime(selectedEndTime),
+                      ),
+                      onTap: () async {
+                        final pickedTime = await showTimePicker(
+                          context: context,
+                          initialTime: selectedEndTime,
+                        );
+
+                        if (pickedTime != null) {
+                          setDialogState(() {
+                            selectedEndTime = pickedTime;
                           });
                         }
                       },
@@ -175,8 +226,10 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
                           '${selectedDate.day} '
                               '${_monthName(selectedDate.month)} '
                               '${selectedDate.year}',
-                          startTime: '04:00 PM',
-                          endTime: '05:00 PM',
+                          startTime:
+                          _formatTime(selectedStartTime),
+                          endTime:
+                          _formatTime(selectedEndTime),
                           description:
                           descriptionController.text.trim(),
                         ),
