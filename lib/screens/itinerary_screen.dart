@@ -35,10 +35,20 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
       tripId: 'trip01',
       title: 'Lunch',
       place: 'Local Restaurant',
-      date: '25 September 2026',
+      date: '26 September 2026',
       startTime: '02:00 PM',
       endTime: '03:00 PM',
       description: 'Lunch at a local restaurant',
+    ),
+    Itinerary(
+      id: '4',
+      tripId: 'trip01',
+      title: 'Visit Ahmedabad',
+      place: 'Ahmedabad, Gujarat',
+      date: '27 September 2026',
+      startTime: '10:00 AM',
+      endTime: '01:00 PM',
+      description: 'Visit Ahmedabad',
     ),
   ];
 
@@ -67,6 +77,46 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
     final period = time.period == DayPeriod.am ? 'AM' : 'PM';
 
     return '$hour:$minute $period';
+  }
+
+  DateTime _parseDate(String date) {
+    final parts = date.split(' ');
+
+    final day = int.parse(parts[0]);
+
+    const months = {
+      'January': 1,
+      'February': 2,
+      'March': 3,
+      'April': 4,
+      'May': 5,
+      'June': 6,
+      'July': 7,
+      'August': 8,
+      'September': 9,
+      'October': 10,
+      'November': 11,
+      'December': 12,
+    };
+
+    final month = months[parts[1]]!;
+    final year = int.parse(parts[2]);
+
+    return DateTime(year, month, day);
+  }
+
+  Map<String, List<Itinerary>> _groupActivitiesByDate() {
+    final Map<String, List<Itinerary>> grouped = {};
+
+    for (final activity in activities) {
+      if (!grouped.containsKey(activity.date)) {
+        grouped[activity.date] = [];
+      }
+
+      grouped[activity.date]!.add(activity);
+    }
+
+    return grouped;
   }
 
   void showAddActivityDialog() {
@@ -128,7 +178,6 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
 
                     const SizedBox(height: 12),
 
-                    // DATE
                     ListTile(
                       leading: const Icon(Icons.calendar_today),
                       title: const Text('Date'),
@@ -153,7 +202,6 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
                       },
                     ),
 
-                    // START TIME
                     ListTile(
                       leading: const Icon(Icons.access_time),
                       title: const Text('Start Time'),
@@ -174,7 +222,6 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
                       },
                     ),
 
-                    // END TIME
                     ListTile(
                       leading: const Icon(Icons.access_time_filled),
                       title: const Text('End Time'),
@@ -372,6 +419,14 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final groupedActivities = _groupActivitiesByDate();
+
+    final sortedDates = groupedActivities.keys.toList();
+
+    sortedDates.sort(
+          (a, b) => _parseDate(a).compareTo(_parseDate(b)),
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Gujarat Trip'),
@@ -381,69 +436,76 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
         padding: const EdgeInsets.all(16),
 
         children: [
-          const Text(
-            'Day 1',
-            style: TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-
-          const SizedBox(height: 4),
-
-          const Text(
-            '25 September 2026',
-            style: TextStyle(
-              color: Colors.grey,
-              fontSize: 16,
-            ),
-          ),
-
-          const SizedBox(height: 20),
-
-          for (final activity in activities)
-            Card(
-              margin: const EdgeInsets.only(bottom: 12),
-
-              child: ListTile(
-                leading: const Icon(Icons.access_time),
-
-                title: Text(
-                  activity.title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-
-                subtitle: Text(
-                  '${activity.date}\n'
-                      '${activity.startTime} - ${activity.endTime}\n'
-                      '${activity.place}',
-                ),
-
-                isThreeLine: true,
-
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: () {
-                        showEditActivityDialog(activity);
-                      },
-                    ),
-
-                    IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () {
-                        deleteActivity(activity);
-                      },
-                    ),
-                  ],
-                ),
+          for (int dayIndex = 0;
+          dayIndex < sortedDates.length;
+          dayIndex++) ...[
+            Text(
+              'Day ${dayIndex + 1}',
+              style: const TextStyle(
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
               ),
             ),
+
+            const SizedBox(height: 4),
+
+            Text(
+              sortedDates[dayIndex],
+              style: const TextStyle(
+                color: Colors.grey,
+                fontSize: 16,
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            for (final activity
+            in groupedActivities[sortedDates[dayIndex]]!)
+              Card(
+                margin: const EdgeInsets.only(bottom: 12),
+
+                child: ListTile(
+                  leading: const Icon(Icons.access_time),
+
+                  title: Text(
+                    activity.title,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+                  subtitle: Text(
+                    '${activity.startTime} - '
+                        '${activity.endTime}\n'
+                        '${activity.place}',
+                  ),
+
+                  isThreeLine: true,
+
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.edit),
+                        onPressed: () {
+                          showEditActivityDialog(activity);
+                        },
+                      ),
+
+                      IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () {
+                          deleteActivity(activity);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+            const SizedBox(height: 16),
+          ],
         ],
       ),
 
