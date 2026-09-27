@@ -121,6 +121,80 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
     );
   }
 
+  void showEditActivityDialog(Itinerary activity) {
+    final titleController =
+    TextEditingController(text: activity.title);
+    final placeController =
+    TextEditingController(text: activity.place);
+    final descriptionController =
+    TextEditingController(text: activity.description);
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Edit Activity'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: titleController,
+                  decoration: const InputDecoration(
+                    labelText: 'Activity Title',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: placeController,
+                  decoration: const InputDecoration(
+                    labelText: 'Place',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: descriptionController,
+                  decoration: const InputDecoration(
+                    labelText: 'Description',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (titleController.text.trim().isEmpty ||
+                    placeController.text.trim().isEmpty) {
+                  return;
+                }
+
+                setState(() {
+                  activity.title = titleController.text.trim();
+                  activity.place = placeController.text.trim();
+                  activity.description =
+                      descriptionController.text.trim();
+                });
+
+                Navigator.pop(context);
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -146,7 +220,6 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
             ),
           ),
           const SizedBox(height: 20),
-
           for (final activity in activities)
             Card(
               margin: const EdgeInsets.only(bottom: 12),
@@ -163,11 +236,16 @@ class _ItineraryScreenState extends State<ItineraryScreen> {
                       '${activity.place}',
                 ),
                 isThreeLine: true,
+                trailing: IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: () {
+                    showEditActivityDialog(activity);
+                  },
+                ),
               ),
             ),
         ],
       ),
-
       floatingActionButton: FloatingActionButton(
         onPressed: showAddActivityDialog,
         child: const Icon(Icons.add),
