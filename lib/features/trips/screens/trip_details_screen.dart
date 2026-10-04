@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
+import 'package:voyage_flutter/features/collaboration/screens/members_screen.dart';
 import 'package:voyage_flutter/features/itinerary/screens/itinerary_screen.dart';
 import 'package:voyage_flutter/features/trips/screens/edit_trip_screen.dart';
 import 'package:voyage_flutter/features/trips/services/trip_service.dart';
@@ -149,6 +150,18 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
               const SizedBox(height: 16),
               _OwnerInformation(ownerId: trip.ownerId),
               const SizedBox(height: 24),
+              FilledButton.icon(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute<void>(
+                      builder: (_) => MembersScreen(tripId: trip.tripId),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.people_outline),
+                label: const Text('Members'),
+              ),
+              const SizedBox(height: 8),
               if (isOwner) ...[
                 FilledButton.icon(
                   onPressed: () {

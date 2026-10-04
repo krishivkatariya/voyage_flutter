@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/foundation.dart';
+import 'package:voyage_flutter/models/trip_member.dart';
 import 'package:voyage_flutter/models/trip.dart';
 
 class TripServiceException implements Exception {
@@ -51,7 +52,24 @@ class TripService {
     );
 
     try {
-      await tripReference.set(trip.toMap());
+      final profile = await _firestore.collection('users').doc(user.uid).get();
+      final profileName = profile.data()?['name'];
+      final member = TripMember(
+        userId: user.uid,
+        name: profileName is String && profileName.trim().isNotEmpty
+            ? profileName.trim()
+            : user.displayName ?? user.email ?? 'Trip owner',
+        email: user.email,
+        role: 'owner',
+      );
+
+      final batch = _firestore.batch();
+      batch.set(tripReference, trip.toMap());
+      batch.set(
+        tripReference.collection('members').doc(user.uid),
+        member.toMap(),
+      );
+      await batch.commit();
       return tripReference.id;
     } on FirebaseException catch (error, stackTrace) {
       Error.throwWithStackTrace(_serviceException(error), stackTrace);
