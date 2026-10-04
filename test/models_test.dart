@@ -4,6 +4,7 @@ import 'package:voyage_flutter/models/activity.dart';
 import 'package:voyage_flutter/models/trip.dart';
 import 'package:voyage_flutter/models/trip_member.dart';
 import 'package:voyage_flutter/models/user.dart';
+import 'package:voyage_flutter/models/vote.dart';
 
 void main() {
   group('TripMember', () {
@@ -118,6 +119,23 @@ void main() {
 
       expect(trip.tripType, TripType.solo);
       expect(trip.startDate, DateTime.utc(2026, 10, 4));
+    });
+  });
+
+  group('Vote', () {
+    test('serializes the voter UID and timestamp', () {
+      final vote = Vote(
+        voterId: 'firebase-auth-uid',
+        votedAt: DateTime.utc(2026, 10, 4, 12),
+      );
+
+      final data = vote.toMap();
+      final restored = Vote.fromMap(data, voterId: 'firebase-auth-uid');
+
+      expect(data['userId'], 'firebase-auth-uid');
+      expect(data['votedAt'], isA<Timestamp>());
+      expect(restored.voterId, 'firebase-auth-uid');
+      expect(restored.votedAt.isAtSameMomentAs(vote.votedAt), isTrue);
     });
   });
 }
