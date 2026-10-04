@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
-import 'package:voyage_flutter/features/auth/screens/authenticated_home_screen.dart';
 import 'package:voyage_flutter/features/auth/screens/login_screen.dart';
 import 'package:voyage_flutter/features/auth/services/auth_service.dart';
+import 'package:voyage_flutter/features/trips/screens/home_screen.dart';
 
 class AuthGate extends StatefulWidget {
   const AuthGate({super.key});
@@ -53,7 +53,7 @@ class _AuthGateState extends State<AuthGate> {
           return const LoginScreen();
         }
 
-        return AuthenticatedHomeScreen(user: user, authService: _authService);
+        return HomeScreen(user: user, authService: _authService);
       },
     );
   }
