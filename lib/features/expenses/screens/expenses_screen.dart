@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:voyage_flutter/features/collaboration/services/collaboration_service.dart';
 import 'package:voyage_flutter/features/expenses/screens/add_expense_screen.dart';
+import 'package:voyage_flutter/features/expenses/screens/expense_summary_screen.dart';
 import 'package:voyage_flutter/features/expenses/screens/edit_expense_screen.dart';
 import 'package:voyage_flutter/features/expenses/services/expense_service.dart';
 import 'package:voyage_flutter/features/expenses/widgets/expense_card.dart';
@@ -119,7 +120,25 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
   Widget build(BuildContext context) {
     final currentUserId = firebase_auth.FirebaseAuth.instance.currentUser?.uid;
     return Scaffold(
-      appBar: AppBar(title: const Text('Expenses')),
+      appBar: AppBar(
+        title: const Text('Expenses'),
+        actions: [
+          IconButton(
+            tooltip: 'Expense Summary',
+            onPressed: currentUserId == null
+                ? null
+                : () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) =>
+                            ExpenseSummaryScreen(tripId: widget.tripId),
+                      ),
+                    );
+                  },
+            icon: const Icon(Icons.summarize_outlined),
+          ),
+        ],
+      ),
       body: currentUserId == null
           ? const _ExpensesMessage(message: 'Sign in to view trip expenses.')
           : FutureBuilder<List<TripMember>>(
