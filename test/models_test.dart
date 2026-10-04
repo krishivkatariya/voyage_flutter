@@ -122,4 +122,50 @@ void main() {
       expect(trip.startDate, DateTime.utc(2026, 10, 4));
     });
   });
+
+  group('Expense', () {
+    test('serializes trip and payer fields without storing document ID', () {
+      const expense = Expense(
+        id: 'firestore-expense-id',
+        tripId: 'firestore-trip-id',
+        description: 'Dinner',
+        amount: 1500.5,
+        paidById: 'firebase-auth-uid',
+      );
+
+      final data = expense.toMap();
+      final restored = Expense.fromMap(
+        data,
+        id: expense.id,
+        tripId: expense.tripId,
+      );
+
+      expect(data['tripId'], 'firestore-trip-id');
+      expect(data['description'], 'Dinner');
+      expect(data['amount'], 1500.5);
+      expect(data['paidById'], 'firebase-auth-uid');
+      expect(data, isNot(contains('id')));
+      expect(restored.id, 'firestore-expense-id');
+      expect(restored.tripId, 'firestore-trip-id');
+      expect(restored.amount, 1500.5);
+      expect(restored.paidById, 'firebase-auth-uid');
+    });
+  });
+
+  group('Vote', () {
+    test('serializes voter UID and timestamp', () {
+      final vote = Vote(
+        voterId: 'firebase-auth-uid',
+        votedAt: DateTime.utc(2026, 10, 4, 12),
+      );
+
+      final data = vote.toMap();
+      final restored = Vote.fromMap(data, voterId: vote.voterId);
+
+      expect(data['userId'], 'firebase-auth-uid');
+      expect(data['votedAt'], isA<Timestamp>());
+      expect(restored.voterId, vote.voterId);
+      expect(restored.votedAt.isAtSameMomentAs(vote.votedAt), isTrue);
+    });
+  });
 }
