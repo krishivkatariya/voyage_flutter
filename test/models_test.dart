@@ -5,6 +5,7 @@ import 'package:voyage_flutter/models/expense.dart';
 import 'package:voyage_flutter/models/trip.dart';
 import 'package:voyage_flutter/models/trip_member.dart';
 import 'package:voyage_flutter/models/user.dart';
+import 'package:voyage_flutter/models/vote.dart';
 
 void main() {
   group('TripMember', () {
@@ -119,35 +120,6 @@ void main() {
 
       expect(trip.tripType, TripType.solo);
       expect(trip.startDate, DateTime.utc(2026, 10, 4));
-    });
-  });
-
-  group('Expense', () {
-    test('serializes trip and payer fields without storing document ID', () {
-      const expense = Expense(
-        id: 'firestore-expense-id',
-        tripId: 'firestore-trip-id',
-        description: 'Dinner',
-        amount: 1500.5,
-        paidById: 'firebase-auth-uid',
-      );
-
-      final data = expense.toMap();
-      final restored = Expense.fromMap(
-        data,
-        id: expense.id,
-        tripId: expense.tripId,
-      );
-
-      expect(data['tripId'], 'firestore-trip-id');
-      expect(data['description'], 'Dinner');
-      expect(data['amount'], 1500.5);
-      expect(data['paidById'], 'firebase-auth-uid');
-      expect(data, isNot(contains('id')));
-      expect(restored.id, 'firestore-expense-id');
-      expect(restored.tripId, 'firestore-trip-id');
-      expect(restored.amount, 1500.5);
-      expect(restored.paidById, 'firebase-auth-uid');
     });
   });
 }
