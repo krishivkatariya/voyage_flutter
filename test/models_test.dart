@@ -1,9 +1,72 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:voyage_flutter/models/activity.dart';
 import 'package:voyage_flutter/models/trip.dart';
+import 'package:voyage_flutter/models/trip_member.dart';
 import 'package:voyage_flutter/models/user.dart';
 
 void main() {
+  group('TripMember', () {
+    test(
+      'serializes member details and restores the UID from the document ID',
+      () {
+        const member = TripMember(
+          userId: 'auth-user-uid',
+          name: 'Voyager',
+          email: 'voyager@example.com',
+          role: 'member',
+        );
+
+        final restored = TripMember.fromMap(
+          member.toMap(),
+          userId: member.userId,
+        );
+
+        expect(restored.userId, 'auth-user-uid');
+        expect(restored.id, 'auth-user-uid');
+        expect(restored.name, 'Voyager');
+        expect(restored.email, 'voyager@example.com');
+        expect(restored.role, 'member');
+      },
+    );
+  });
+
+  group('Activity', () {
+    test('serializes a Firestore timestamp and uses path IDs on read', () {
+      final activity = Activity(
+        activityId: 'generated-activity-id',
+        tripId: 'generated-trip-id',
+        title: 'Museum visit',
+        placeName: 'City museum',
+        date: DateTime.utc(2026, 10, 15),
+        startTime: '09:30',
+        endTime: '11:00',
+        description: 'Meet at the entrance',
+        latitude: 45.5,
+        longitude: -73.6,
+        createdBy: 'auth-uid',
+      );
+
+      final data = activity.toMap();
+      final restored = Activity.fromMap(
+        data,
+        activityId: activity.activityId,
+        tripId: activity.tripId,
+      );
+
+      expect(data['date'], isA<Timestamp>());
+      expect(data, isNot(contains('activityId')));
+      expect(data, isNot(contains('tripId')));
+      expect(restored.activityId, activity.activityId);
+      expect(restored.tripId, activity.tripId);
+      expect(restored.date.isAtSameMomentAs(activity.date), isTrue);
+      expect(restored.startTime, '09:30');
+      expect(restored.latitude, 45.5);
+      expect(restored.longitude, -73.6);
+      expect(restored.createdBy, 'auth-uid');
+    });
+  });
+
   group('User', () {
     test('reads a missing profile image as null and omits the document ID', () {
       const user = User(
