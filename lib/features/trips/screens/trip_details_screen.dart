@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
+import 'package:voyage_flutter/features/itinerary/screens/itinerary_screen.dart';
 import 'package:voyage_flutter/features/trips/screens/edit_trip_screen.dart';
 import 'package:voyage_flutter/features/trips/services/trip_service.dart';
 import 'package:voyage_flutter/features/trips/widgets/trip_card.dart';
@@ -150,6 +151,18 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
               const SizedBox(height: 24),
               if (isOwner) ...[
                 FilledButton.icon(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => ItineraryScreen(tripId: trip.tripId),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.event_note),
+                  label: const Text('Itinerary'),
+                ),
+                const SizedBox(height: 8),
+                FilledButton.icon(
                   onPressed: _isDeleting ? null : () => _editTrip(trip),
                   icon: const Icon(Icons.edit_outlined),
                   label: const Text('Edit Trip'),
@@ -179,7 +192,6 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                 spacing: 8,
                 runSpacing: 8,
                 children: [
-                  _ComingSoonChip(label: 'Itinerary'),
                   _ComingSoonChip(label: 'Places / Map'),
                   _ComingSoonChip(label: 'Members'),
                   _ComingSoonChip(label: 'Voting'),

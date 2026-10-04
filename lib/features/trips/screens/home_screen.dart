@@ -6,7 +6,6 @@ import 'package:voyage_flutter/features/trips/screens/create_trip_screen.dart';
 import 'package:voyage_flutter/features/trips/screens/trips_screen.dart';
 import 'package:voyage_flutter/features/trips/services/trip_service.dart';
 import 'package:voyage_flutter/models/trip.dart';
-import 'package:voyage_flutter/screens/itinerary_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({required this.user, required this.authService, super.key});
@@ -169,17 +168,6 @@ class _HomeScreenState extends State<HomeScreen> {
             label: const Text('Create Trip'),
           ),
           const SizedBox(height: 12),
-          TextButton.icon(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute<void>(
-                  builder: (_) => const ItineraryScreen(),
-                ),
-              );
-            },
-            icon: const Icon(Icons.event_note),
-            label: const Text('Open existing itinerary'),
-          ),
           const SizedBox(height: 16),
           Text(
             widget.user.email ?? 'Signed in',
