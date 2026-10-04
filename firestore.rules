@@ -1,0 +1,328 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwnUser(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function tripPath(tripId) {
+      return /databases/$(database)/documents/trips/$(tripId);
+    }
+
+    function memberPath(tripId, userId) {
+      return /databases/$(database)/documents/trips/$(tripId)/members/$(userId);
+    }
+
+    function userPath(userId) {
+      return /databases/$(database)/documents/users/$(userId);
+    }
+
+    function activityPath(tripId, activityId) {
+      return /databases/$(database)/documents/trips/$(tripId)/activities/$(activityId);
+    }
+
+    function isTripOwner(tripId) {
+      return isSignedIn()
+        && exists(tripPath(tripId))
+        && get(tripPath(tripId)).data.ownerId == request.auth.uid;
+    }
+
+    function isTripOwnerAfter(tripId) {
+      return isSignedIn()
+        && existsAfter(tripPath(tripId))
+        && getAfter(tripPath(tripId)).data.ownerId == request.auth.uid;
+    }
+
+    function isTripMember(tripId) {
+      return isSignedIn()
+        && exists(tripPath(tripId))
+        && exists(memberPath(tripId, request.auth.uid));
+    }
+
+    function hasValidUserProfile() {
+      return request.resource.data.keys().hasOnly([
+          'name',
+          'email',
+          'profileImage'
+        ])
+        && request.resource.data.keys().hasAll(['name', 'email', 'profileImage'])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.email is string
+        && (
+          request.resource.data.profileImage == null
+          || request.resource.data.profileImage is string
+        );
+    }
+
+    function hasValidTripData() {
+      return request.resource.data.keys().hasOnly([
+          'ownerId',
+          'tripName',
+          'destination',
+          'startDate',
+          'endDate',
+          'tripType',
+          'description'
+        ])
+        && request.resource.data.keys().hasAll([
+          'ownerId',
+          'tripName',
+          'destination',
+          'startDate',
+          'endDate',
+          'tripType',
+          'description'
+        ])
+        && request.resource.data.ownerId is string
+        && request.resource.data.tripName is string
+        && request.resource.data.tripName.size() > 0
+        && request.resource.data.destination is string
+        && request.resource.data.destination.size() > 0
+        && request.resource.data.startDate is timestamp
+        && request.resource.data.endDate is timestamp
+        && request.resource.data.endDate >= request.resource.data.startDate
+        && request.resource.data.tripType in ['Solo', 'Group']
+        && (
+          request.resource.data.description == null
+          || request.resource.data.description is string
+        );
+    }
+
+    function hasValidMemberData(userId, tripOwnerId) {
+      return request.resource.data.keys().hasOnly([
+          'userId',
+          'name',
+          'email',
+          'role'
+        ])
+        && request.resource.data.keys().hasAll([
+          'userId',
+          'name',
+          'email',
+          'role'
+        ])
+        && request.resource.data.userId == userId
+        && request.resource.data.name is string
+        && (
+          request.resource.data.email == null
+          || request.resource.data.email is string
+        )
+        && (
+          (userId == tripOwnerId && request.resource.data.role == 'owner')
+          || (userId != tripOwnerId && request.resource.data.role == 'member')
+        );
+    }
+
+    function matchesRegisteredUser(userId) {
+      return exists(userPath(userId))
+        && request.resource.data.name == get(userPath(userId)).data.name
+        && request.resource.data.email == get(userPath(userId)).data.email;
+    }
+
+    function hasValidActivityData() {
+      return request.resource.data.keys().hasOnly([
+          'title',
+          'placeName',
+          'date',
+          'startTime',
+          'endTime',
+          'description',
+          'latitude',
+          'longitude',
+          'createdBy'
+        ])
+        && request.resource.data.keys().hasAll([
+          'title',
+          'placeName',
+          'date',
+          'startTime',
+          'endTime',
+          'description',
+          'latitude',
+          'longitude',
+          'createdBy'
+        ])
+        && request.resource.data.title is string
+        && request.resource.data.placeName is string
+        && request.resource.data.date is timestamp
+        && request.resource.data.startTime is string
+        && request.resource.data.endTime is string
+        && (
+          request.resource.data.description == null
+          || request.resource.data.description is string
+        )
+        && (
+          request.resource.data.latitude == null
+          || request.resource.data.latitude is number
+        )
+        && (
+          request.resource.data.longitude == null
+          || request.resource.data.longitude is number
+        );
+    }
+
+    function hasValidExpenseData(tripId) {
+      return request.resource.data.keys().hasOnly([
+          'tripId',
+          'description',
+          'amount',
+          'paidById',
+          'splitMemberIds'
+        ])
+        && request.resource.data.keys().hasAll([
+          'tripId',
+          'description',
+          'amount',
+          'paidById'
+        ])
+        && request.resource.data.tripId == tripId
+        && request.resource.data.description is string
+        && request.resource.data.description.size() > 0
+        && request.resource.data.description.size() <= 100
+        && request.resource.data.amount is number
+        && request.resource.data.amount > 0
+        && request.resource.data.paidById is string
+        && (
+          !request.resource.data.keys().hasAny(['splitMemberIds'])
+          || request.resource.data.splitMemberIds is list
+        );
+    }
+
+    match /users/{userId} {
+      // User profiles remain private; invite-by-email needs a trusted lookup.
+      allow get: if isOwnUser(userId);
+      allow list: if false;
+      allow create: if isOwnUser(userId)
+        && hasValidUserProfile()
+        && request.resource.data.email == request.auth.token.email;
+      allow update: if isOwnUser(userId)
+        && hasValidUserProfile()
+        && request.resource.data.email == resource.data.email
+        && request.resource.data.diff(resource.data)
+          .affectedKeys()
+          .hasOnly(['name', 'profileImage']);
+      allow delete: if false;
+    }
+
+    match /trips/{tripId} {
+      allow get, list: if isSignedIn()
+        && (
+          resource.data.ownerId == request.auth.uid
+          || isTripMember(tripId)
+        );
+
+      // A trip and its owner's member document must be created atomically.
+      allow create: if isSignedIn()
+        && hasValidTripData()
+        && request.resource.data.ownerId == request.auth.uid
+        && existsAfter(memberPath(tripId, request.auth.uid))
+        && getAfter(memberPath(tripId, request.auth.uid)).data.userId
+          == request.auth.uid
+        && getAfter(memberPath(tripId, request.auth.uid)).data.role == 'owner';
+
+      allow update: if isTripOwner(tripId)
+        && hasValidTripData()
+        && request.resource.data.ownerId == resource.data.ownerId
+        && request.resource.data.diff(resource.data)
+          .affectedKeys()
+          .hasOnly([
+            'tripName',
+            'destination',
+            'startDate',
+            'endDate',
+            'tripType',
+            'description'
+          ]);
+
+      allow delete: if isTripOwner(tripId);
+
+      match /members/{userId} {
+        allow get, list: if isTripMember(tripId);
+
+        allow create: if isSignedIn()
+          && request.resource.data.userId == userId
+          && matchesRegisteredUser(userId)
+          && (
+            (
+              isTripOwner(tripId)
+              && hasValidMemberData(
+                userId,
+                get(tripPath(tripId)).data.ownerId
+              )
+              && userId != get(tripPath(tripId)).data.ownerId
+            )
+            || (
+              userId == request.auth.uid
+              && isTripOwnerAfter(tripId)
+              && hasValidMemberData(userId, request.auth.uid)
+            )
+          );
+
+        // The app has no member-role editing feature.
+        allow update: if false;
+
+        allow delete: if isTripOwner(tripId)
+          && userId != get(tripPath(tripId)).data.ownerId;
+      }
+
+      match /activities/{activityId} {
+        allow get, list: if isTripMember(tripId);
+
+        allow create: if isTripMember(tripId)
+          && hasValidActivityData()
+          && request.resource.data.createdBy == request.auth.uid;
+
+        allow update: if isTripMember(tripId)
+          && hasValidActivityData()
+          && request.resource.data.createdBy == resource.data.createdBy;
+
+        allow delete: if isTripMember(tripId);
+
+        match /votes/{userId} {
+          allow get, list: if isTripMember(tripId)
+            && exists(activityPath(tripId, activityId));
+
+          allow create: if isTripMember(tripId)
+            && exists(activityPath(tripId, activityId))
+            && userId == request.auth.uid
+            && request.resource.data.keys().hasOnly(['userId', 'votedAt'])
+            && request.resource.data.keys().hasAll(['userId', 'votedAt'])
+            && request.resource.data.userId == request.auth.uid
+            && request.resource.data.votedAt is timestamp;
+
+          allow update: if false;
+
+          allow delete: if isTripMember(tripId)
+            && exists(activityPath(tripId, activityId))
+            && userId == request.auth.uid;
+        }
+      }
+
+      match /expenses/{expenseId} {
+        allow get, list: if isTripMember(tripId);
+
+        allow create: if isTripMember(tripId)
+          && hasValidExpenseData(tripId)
+          && request.resource.data.paidById == request.auth.uid;
+
+        allow update: if isTripMember(tripId)
+          && resource.data.paidById == request.auth.uid
+          && request.resource.data.paidById == resource.data.paidById
+          && request.resource.data.tripId == resource.data.tripId
+          && hasValidExpenseData(tripId)
+          && request.resource.data.diff(resource.data)
+            .affectedKeys()
+            .hasOnly(['description', 'amount', 'splitMemberIds']);
+
+        allow delete: if isTripMember(tripId)
+          && resource.data.paidById == request.auth.uid;
+      }
+    }
+  }
+}

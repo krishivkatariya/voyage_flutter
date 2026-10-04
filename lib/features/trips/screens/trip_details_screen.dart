@@ -151,7 +151,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
               if (trip.description?.isNotEmpty ?? false)
                 _DetailRow(label: 'Description', value: trip.description!),
               const SizedBox(height: 16),
-              _OwnerInformation(ownerId: trip.ownerId),
+              _OwnerInformation(tripId: trip.tripId, ownerId: trip.ownerId),
               const SizedBox(height: 24),
               FilledButton.icon(
                 onPressed: () {
@@ -257,15 +257,18 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
 }
 
 class _OwnerInformation extends StatelessWidget {
-  const _OwnerInformation({required this.ownerId});
+  const _OwnerInformation({required this.tripId, required this.ownerId});
 
+  final String tripId;
   final String ownerId;
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
       stream: FirebaseFirestore.instance
-          .collection('users')
+          .collection('trips')
+          .doc(tripId)
+          .collection('members')
           .doc(ownerId)
           .snapshots(),
       builder: (context, snapshot) {
