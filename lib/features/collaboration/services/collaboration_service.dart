@@ -66,18 +66,9 @@ class CollaborationService {
       }
 
       if (!membersById.containsKey(ownerId)) {
-        final ownerProfile = await _firestore
-            .collection('users')
-            .doc(ownerId)
-            .get();
-        final profileData = ownerProfile.data();
-        final storedName = profileData?['name'];
         membersById[ownerId] = TripMember(
           userId: ownerId,
-          name: storedName is String && storedName.trim().isNotEmpty
-              ? storedName.trim()
-              : 'Trip owner',
-          email: profileData?['email'] as String?,
+          name: 'Trip owner',
           role: 'owner',
         );
       }
@@ -120,18 +111,9 @@ class CollaborationService {
         final tripSnapshot = await _trip(tripId).get();
         final ownerId = tripSnapshot.data()?['ownerId'];
         if (ownerId == userId && tripSnapshot.exists) {
-          final profile = await _firestore
-              .collection('users')
-              .doc(userId)
-              .get();
-          final profileData = profile.data();
-          final name = profileData?['name'];
           return TripMember(
             userId: userId,
-            name: name is String && name.trim().isNotEmpty
-                ? name.trim()
-                : 'Trip owner',
-            email: profileData?['email'] as String?,
+            name: 'Trip owner',
             role: 'owner',
           );
         }
