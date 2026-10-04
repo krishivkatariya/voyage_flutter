@@ -1,11 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:voyage_flutter/features/collaboration/services/collaboration_service.dart';
 import 'package:voyage_flutter/features/expenses/screens/add_expense_screen.dart';
 import 'package:voyage_flutter/features/expenses/screens/edit_expense_screen.dart';
 import 'package:voyage_flutter/features/expenses/services/expense_service.dart';
 import 'package:voyage_flutter/features/expenses/widgets/expense_card.dart';
 import 'package:voyage_flutter/models/expense.dart';
+import 'package:voyage_flutter/models/trip_member.dart';
 
 class ExpensesScreen extends StatefulWidget {
   const ExpensesScreen({required this.tripId, super.key});
@@ -18,18 +20,22 @@ class ExpensesScreen extends StatefulWidget {
 
 class _ExpensesScreenState extends State<ExpensesScreen> {
   final _expenseService = ExpenseService();
+  final _collaborationService = CollaborationService();
   final Set<String> _busyExpenseIds = {};
   late Stream<List<Expense>> _expensesStream;
+  late Future<List<TripMember>> _membersFuture;
 
   @override
   void initState() {
     super.initState();
     _expensesStream = _expenseService.watchExpenses(widget.tripId);
+    _membersFuture = _collaborationService.getMembers(tripId: widget.tripId);
   }
 
   void _retry() {
     setState(() {
       _expensesStream = _expenseService.watchExpenses(widget.tripId);
+      _membersFuture = _collaborationService.getMembers(tripId: widget.tripId);
     });
   }
 
@@ -116,12 +122,12 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
       appBar: AppBar(title: const Text('Expenses')),
       body: currentUserId == null
           ? const _ExpensesMessage(message: 'Sign in to view trip expenses.')
-          : StreamBuilder<List<Expense>>(
-              stream: _expensesStream,
+          : FutureBuilder<List<TripMember>>(
+              future: _membersFuture,
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return _ExpensesMessage(
-                    message: ExpenseService.userMessage(snapshot.error!),
+                    message: CollaborationService.userMessage(snapshot.error!),
                     buttonLabel: 'Retry',
                     onPressed: _retry,
                   );
@@ -129,26 +135,48 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                 if (!snapshot.hasData) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                final expenses = snapshot.data!;
-                if (expenses.isEmpty) {
-                  return _ExpensesMessage(
-                    message: 'No expenses have been added yet.',
-                    buttonLabel: 'Add Expense',
-                    onPressed: _addExpense,
-                  );
-                }
+                final memberNames = {
+                  for (final member in snapshot.data!)
+                    member.userId: member.name,
+                };
+                return StreamBuilder<List<Expense>>(
+                  stream: _expensesStream,
+                  builder: (context, expenseSnapshot) {
+                    if (expenseSnapshot.hasError) {
+                      return _ExpensesMessage(
+                        message: ExpenseService.userMessage(
+                          expenseSnapshot.error!,
+                        ),
+                        buttonLabel: 'Retry',
+                        onPressed: _retry,
+                      );
+                    }
+                    if (!expenseSnapshot.hasData) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    final expenses = expenseSnapshot.data!;
+                    if (expenses.isEmpty) {
+                      return _ExpensesMessage(
+                        message: 'No expenses have been added yet.',
+                        buttonLabel: 'Add Expense',
+                        onPressed: _addExpense,
+                      );
+                    }
 
-                return ListView(
-                  padding: const EdgeInsets.all(16),
-                  children: [
-                    for (final expense in expenses)
-                      ExpenseCard(
-                        expense: expense,
-                        currentUserId: currentUserId,
-                        onEdit: () => _editExpense(expense),
-                        onDelete: () => _deleteExpense(expense),
-                      ),
-                  ],
+                    return ListView(
+                      padding: const EdgeInsets.all(16),
+                      children: [
+                        for (final expense in expenses)
+                          ExpenseCard(
+                            expense: expense,
+                            currentUserId: currentUserId,
+                            memberNames: memberNames,
+                            onEdit: () => _editExpense(expense),
+                            onDelete: () => _deleteExpense(expense),
+                          ),
+                      ],
+                    );
+                  },
                 );
               },
             ),

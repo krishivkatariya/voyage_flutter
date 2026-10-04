@@ -45,4 +45,25 @@ class ExpenseValidators {
     }
     return amount;
   }
+
+  static String? validateSplitMemberIds(
+    List<String> selectedMemberIds, {
+    required Set<String> tripMemberIds,
+  }) {
+    if (selectedMemberIds.isEmpty) {
+      return 'Select at least one member for an equal split.';
+    }
+    if (selectedMemberIds.any((memberId) => memberId.trim().isEmpty)) {
+      return 'A split member ID is invalid.';
+    }
+    if (selectedMemberIds.toSet().length != selectedMemberIds.length) {
+      return 'A member can only be selected once.';
+    }
+    if (selectedMemberIds.any(
+      (memberId) => !tripMemberIds.contains(memberId),
+    )) {
+      return 'Every selected person must be a member of this trip.';
+    }
+    return null;
+  }
 }

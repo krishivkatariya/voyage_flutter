@@ -20,6 +20,7 @@ class _EditExpenseScreenState extends State<EditExpenseScreen> {
   Future<void> _updateExpense({
     required String description,
     required double amount,
+    required List<String> splitMemberIds,
   }) async {
     try {
       await _expenseService.updateExpense(
@@ -29,6 +30,7 @@ class _EditExpenseScreenState extends State<EditExpenseScreen> {
           description: description,
           amount: amount,
           paidById: widget.expense.paidById,
+          splitMemberIds: splitMemberIds,
         ),
       );
       if (mounted) {
@@ -68,6 +70,7 @@ class _EditExpenseScreenState extends State<EditExpenseScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Edit Expense')),
       body: ExpenseForm(
+        tripId: widget.expense.tripId,
         initialExpense: widget.expense,
         submitLabel: 'Save changes',
         onSubmit: _updateExpense,

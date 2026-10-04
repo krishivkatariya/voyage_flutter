@@ -131,6 +131,7 @@ void main() {
         description: 'Dinner',
         amount: 1500.5,
         paidById: 'firebase-auth-uid',
+        splitMemberIds: ['payer-uid', 'member-uid'],
       );
 
       final data = expense.toMap();
@@ -144,11 +145,23 @@ void main() {
       expect(data['description'], 'Dinner');
       expect(data['amount'], 1500.5);
       expect(data['paidById'], 'firebase-auth-uid');
+      expect(data['splitMemberIds'], ['payer-uid', 'member-uid']);
       expect(data, isNot(contains('id')));
       expect(restored.id, 'firestore-expense-id');
       expect(restored.tripId, 'firestore-trip-id');
       expect(restored.amount, 1500.5);
       expect(restored.paidById, 'firebase-auth-uid');
+      expect(restored.splitMemberIds, ['payer-uid', 'member-uid']);
+    });
+
+    test('treats missing split member IDs as an unsplit legacy expense', () {
+      final expense = Expense.fromMap(
+        {'description': 'Older expense', 'amount': 10, 'paidById': 'payer-uid'},
+        id: 'expense-doc-id',
+        tripId: 'trip-doc-id',
+      );
+
+      expect(expense.splitMemberIds, isEmpty);
     });
   });
 
