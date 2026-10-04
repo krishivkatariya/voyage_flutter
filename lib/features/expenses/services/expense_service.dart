@@ -74,9 +74,11 @@ class ExpenseService {
     required String tripId,
     required String description,
     required double amount,
+    List<String> splitMemberIds = const [],
   }) async {
     final user = _requireCurrentUser();
     _validateFields(description, amount);
+    _validateSplitMemberIds(splitMemberIds);
     final expenseReference = _expenses(tripId).doc();
     final expense = Expense(
       id: expenseReference.id,
@@ -84,6 +86,7 @@ class ExpenseService {
       description: description.trim(),
       amount: amount,
       paidById: user.uid,
+      splitMemberIds: List.unmodifiable(splitMemberIds),
     );
 
     try {
@@ -101,6 +104,7 @@ class ExpenseService {
             'You must be a member of this trip to add an expense.',
           );
         }
+        await _verifySplitMembers(transaction, tripReference, splitMemberIds);
         transaction.set(expenseReference, expense.toMap());
       });
       return expenseReference.id;
@@ -114,6 +118,7 @@ class ExpenseService {
   Future<void> updateExpense({required Expense expense}) async {
     final user = _requireCurrentUser();
     _validateFields(expense.description, expense.amount);
+    _validateSplitMemberIds(expense.splitMemberIds);
     if (expense.id.isEmpty || expense.tripId.isEmpty) {
       throw const ExpenseServiceException('Expense information is missing.');
     }
@@ -144,9 +149,15 @@ class ExpenseService {
             'Only the original payer can edit this expense.',
           );
         }
+        await _verifySplitMembers(
+          transaction,
+          tripReference,
+          expense.splitMemberIds,
+        );
         transaction.update(expenseReference, {
           'description': expense.description.trim(),
           'amount': expense.amount,
+          'splitMemberIds': expense.splitMemberIds,
         });
       });
     } on ExpenseServiceException {
@@ -213,6 +224,37 @@ class ExpenseService {
     final amountError = ExpenseValidators.validateAmountValue(amount);
     if (amountError != null) {
       throw ExpenseServiceException(amountError);
+    }
+  }
+
+  void _validateSplitMemberIds(List<String> splitMemberIds) {
+    if (splitMemberIds.isEmpty) {
+      return;
+    }
+    if (splitMemberIds.any((memberId) => memberId.trim().isEmpty)) {
+      throw const ExpenseServiceException('A split member ID is invalid.');
+    }
+    if (splitMemberIds.toSet().length != splitMemberIds.length) {
+      throw const ExpenseServiceException(
+        'A member can only be selected once in a split.',
+      );
+    }
+  }
+
+  Future<void> _verifySplitMembers(
+    Transaction transaction,
+    DocumentReference<Map<String, dynamic>> tripReference,
+    List<String> splitMemberIds,
+  ) async {
+    for (final memberId in splitMemberIds) {
+      final memberSnapshot = await transaction.get(
+        tripReference.collection('members').doc(memberId),
+      );
+      if (!memberSnapshot.exists) {
+        throw const ExpenseServiceException(
+          'Every selected person must be a member of this trip.',
+        );
+      }
     }
   }
 

@@ -18,12 +18,14 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   Future<void> _addExpense({
     required String description,
     required double amount,
+    required List<String> splitMemberIds,
   }) async {
     try {
       await _expenseService.addExpense(
         tripId: widget.tripId,
         description: description,
         amount: amount,
+        splitMemberIds: splitMemberIds,
       );
       if (mounted) {
         Navigator.of(context).pop(true);
@@ -48,7 +50,11 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Add Expense')),
-      body: ExpenseForm(submitLabel: 'Add expense', onSubmit: _addExpense),
+      body: ExpenseForm(
+        tripId: widget.tripId,
+        submitLabel: 'Add expense',
+        onSubmit: _addExpense,
+      ),
     );
   }
 }
