@@ -1,6 +1,7 @@
 class TripMember {
   final String id;
   final String name;
+  final String? role;
 
-  TripMember({required this.id, required this.name});
+  const TripMember({required this.id, required this.name, this.role});
 }
