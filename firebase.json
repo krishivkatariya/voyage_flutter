@@ -1,5 +1,6 @@
-{
-  "firestore": {
-    "rules": "firestore.rules"
-  }
-}
+{"firestore": {
+  "rules": "firestore.rules",
+  "edition": "enterprise",
+  "database": "default",
+  "location": "asia-south1"
+},"flutter":{"platforms":{"android":{"default":{"projectId":"voyage-trip-planner-c7623","appId":"1:1033008843718:android:48e176f4a8fbf105dac0c7","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"voyage-trip-planner-c7623","configurations":{"android":"1:1033008843718:android:48e176f4a8fbf105dac0c7","ios":"1:1033008843718:ios:7719f9275adba042dac0c7","web":"1:1033008843718:web:a1461895f7a1810cdac0c7"}}}}}}

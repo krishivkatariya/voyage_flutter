@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/foundation.dart';
+import 'package:voyage_flutter/features/collaboration/services/member_validators.dart';
 import 'package:voyage_flutter/models/trip_member.dart';
 
 class CollaborationServiceException implements Exception {
@@ -130,31 +131,27 @@ class CollaborationService {
     required String email,
   }) async {
     final currentUser = _requireCurrentUser();
-    final normalizedEmail = email.trim().toLowerCase();
+    final normalizedEmail = MemberValidators.normalizeEmail(email);
     try {
       await _requireTripOwner(tripId, currentUser.uid);
 
-      var matches = await _firestore
-          .collection('users')
-          .where('email', isEqualTo: normalizedEmail)
+      // Email lookup runs against the authenticated, non-sensitive
+      // `userDirectory` index; the private `users/{userId}` profile of another
+      // account is never read from the client.
+      final matches = await _firestore
+          .collection('userDirectory')
+          .where('emailLowercase', isEqualTo: normalizedEmail)
           .limit(1)
           .get();
-      if (matches.docs.isEmpty && email.trim() != normalizedEmail) {
-        matches = await _firestore
-            .collection('users')
-            .where('email', isEqualTo: email.trim())
-            .limit(1)
-            .get();
-      }
       if (matches.docs.isEmpty) {
         throw const CollaborationServiceException(
           'User not found. They must register for Voyage first.',
         );
       }
 
-      final userDocument = matches.docs.first;
-      final targetId = userDocument.id;
-      final userData = userDocument.data();
+      final directoryDocument = matches.docs.first;
+      final targetId = directoryDocument.id;
+      final userData = directoryDocument.data();
       final targetMemberReference = _members(tripId).doc(targetId);
       final memberName = userData['name'];
       final memberEmail = userData['email'];

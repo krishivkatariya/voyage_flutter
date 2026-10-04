@@ -11,4 +11,10 @@ class MemberValidators {
     }
     return null;
   }
+
+  /// Normalizes an email address so it can be stored in and queried from the
+  /// `userDirectory/{userId}` lookup collection (`emailLowercase` field).
+  static String normalizeEmail(String? value) {
+    return (value ?? '').trim().toLowerCase();
+  }
 }

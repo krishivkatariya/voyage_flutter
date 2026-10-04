@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1033008843718",
+    "project_id": "voyage-trip-planner-c7623",
+    "storage_bucket": "voyage-trip-planner-c7623.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1033008843718:android:48e176f4a8fbf105dac0c7",
+        "android_client_info": {
+          "package_name": "com.example.voyage_flutter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZd0eH-HG2M9P3JAJkm_zJWC2oJ3uHRGc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

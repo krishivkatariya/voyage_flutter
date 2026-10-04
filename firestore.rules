@@ -60,6 +60,32 @@ service cloud.firestore {
         );
     }
 
+    // Directory entries only carry non-sensitive lookup/display data, so a
+    // password (or anything else) can never be stored alongside them.
+    function hasValidDirectoryEntry() {
+      return request.resource.data.keys().hasOnly([
+          'userId',
+          'email',
+          'emailLowercase',
+          'name'
+        ])
+        && request.resource.data.keys().hasAll([
+          'userId',
+          'email',
+          'emailLowercase',
+          'name'
+        ])
+        && request.resource.data.userId is string
+        && request.resource.data.userId.size() > 0
+        && request.resource.data.email is string
+        && request.resource.data.email.size() > 0
+        && request.resource.data.emailLowercase is string
+        && request.resource.data.emailLowercase
+          == request.resource.data.email.lower()
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0;
+    }
+
     function hasValidTripData() {
       return request.resource.data.keys().hasOnly([
           'ownerId',
@@ -207,6 +233,24 @@ service cloud.firestore {
         && request.resource.data.diff(resource.data)
           .affectedKeys()
           .hasOnly(['name', 'profileImage']);
+      allow delete: if false;
+    }
+
+    match /userDirectory/{userId} {
+      // Email-based member lookup only. Every signed-in user may search the
+      // directory, but nobody may read it without authenticating first.
+      allow get, list: if isSignedIn();
+
+      // Each account owns exactly its own directory document; the document ID
+      // and the stored userId must both be the caller's Firebase Auth UID.
+      allow create: if isOwnUser(userId)
+        && request.resource.data.userId == userId
+        && hasValidDirectoryEntry();
+
+      allow update: if isOwnUser(userId)
+        && request.resource.data.userId == userId
+        && hasValidDirectoryEntry();
+
       allow delete: if false;
     }
 

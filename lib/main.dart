@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:voyage_flutter/core/constants/app_constants.dart';
 import 'package:voyage_flutter/features/auth/screens/auth_gate.dart';
+import 'package:voyage_flutter/firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,7 +28,9 @@ class _VoyageAppState extends State<VoyageApp> {
 
   Future<FirebaseApp> _initializeFirebase() async {
     try {
-      return await Firebase.initializeApp();
+      return await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
     } on Object catch (error, stackTrace) {
       debugPrint('Firebase initialization failed: $error');
       debugPrintStack(stackTrace: stackTrace);

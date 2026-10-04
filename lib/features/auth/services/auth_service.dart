@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:voyage_flutter/features/collaboration/services/member_validators.dart';
 import 'package:voyage_flutter/models/user.dart' as voyage_model;
 
 class AuthService {
@@ -29,15 +30,31 @@ class AuthService {
       throw StateError('Firebase Authentication did not return a user.');
     }
 
+    final profileEmail = firebaseUser.email ?? email.trim();
     final user = voyage_model.User(
       userId: firebaseUser.uid,
       name: name.trim(),
-      email: firebaseUser.email ?? email.trim(),
+      email: profileEmail,
     );
-    await _firestore
-        .collection('users')
-        .doc(firebaseUser.uid)
-        .set(user.toMap());
+
+    // The private profile and the non-sensitive directory entry are committed
+    // together so a registration can never leave them out of sync. The
+    // directory is what other members use for email-based lookup.
+    final batch = _firestore.batch();
+    batch.set(
+      _firestore.collection('users').doc(firebaseUser.uid),
+      user.toMap(),
+    );
+    batch.set(
+      _firestore.collection('userDirectory').doc(firebaseUser.uid),
+      {
+        'userId': firebaseUser.uid,
+        'email': profileEmail,
+        'emailLowercase': MemberValidators.normalizeEmail(profileEmail),
+        'name': user.name,
+      },
+    );
+    await batch.commit();
 
     return credential;
   }
