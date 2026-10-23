@@ -7,6 +7,7 @@ import 'package:voyage_flutter/features/trips/screens/create_trip_screen.dart';
 import 'package:voyage_flutter/features/trips/screens/trips_screen.dart';
 import 'package:voyage_flutter/features/trips/services/trip_service.dart';
 import 'package:voyage_flutter/models/trip.dart';
+import 'package:voyage_flutter/screens/map_screen.dart';
 
 const Color _purple = Color(0xFF6D4AFF);
 const Color _darkPurple = Color(0xFF38216D);
@@ -83,6 +84,14 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => const TripsScreen(),
+      ),
+    );
+  }
+
+  void _openMap() {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => const MapScreen(),
       ),
     );
   }
@@ -182,9 +191,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
             return Center(
               child: ConstrainedBox(
-                constraints: const BoxConstraints(
-                  maxWidth: 1180,
-                ),
+                constraints: const BoxConstraints(maxWidth: 1180),
                 child: ListView(
                   padding: EdgeInsets.fromLTRB(
                     horizontalPadding,
@@ -198,8 +205,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       builder: (context, snapshot) {
                         final nameValue = snapshot.data?.data()?['name'];
 
-                        final name =
-                        nameValue is String &&
+                        final name = nameValue is String &&
                             nameValue.trim().isNotEmpty
                             ? nameValue.trim()
                             : widget.user.email?.split('@').first ??
@@ -320,13 +326,30 @@ class _HomeScreenState extends State<HomeScreen> {
                           onTap: _openCreateTrip,
                         );
 
+                        final exploreMapCard = _ActionCard(
+                          icon: Icons.map_rounded,
+                          title: 'Explore Map',
+                          description:
+                          'Discover destinations on an interactive map.',
+                          buttonLabel: 'Open map',
+                          iconBackground: const Color(0xFFE4F7EF),
+                          iconColor: const Color(0xFF168A68),
+                          onTap: _openMap,
+                        );
+
                         if (wide) {
-                          return Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          return Column(
                             children: [
-                              Expanded(child: myTripsCard),
-                              const SizedBox(width: 18),
-                              Expanded(child: createTripCard),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(child: myTripsCard),
+                                  const SizedBox(width: 18),
+                                  Expanded(child: createTripCard),
+                                ],
+                              ),
+                              const SizedBox(height: 14),
+                              exploreMapCard,
                             ],
                           );
                         }
@@ -336,6 +359,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             myTripsCard,
                             const SizedBox(height: 14),
                             createTripCard,
+                            const SizedBox(height: 14),
+                            exploreMapCard,
                           ],
                         );
                       },
