@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:voyage_flutter/features/trips/services/trip_validators.dart';
 import 'package:voyage_flutter/models/trip.dart';
@@ -20,13 +19,14 @@ class TripForm extends StatefulWidget {
   final Trip? initialTrip;
 
   final Future<void> Function({
-  required String tripName,
-  required String destination,
-  required DateTime startDate,
-  required DateTime endDate,
-  required TripType tripType,
-  String? description,
-  }) onSubmit;
+    required String tripName,
+    required String destination,
+    required DateTime startDate,
+    required DateTime endDate,
+    required TripType tripType,
+    String? description,
+  })
+  onSubmit;
 
   @override
   State<TripForm> createState() => TripFormState();
@@ -52,12 +52,13 @@ class TripFormState extends State<TripForm> {
 
     final trip = widget.initialTrip;
 
-    _tripNameController =
-        TextEditingController(text: trip?.tripName ?? '');
-    _destinationController =
-        TextEditingController(text: trip?.destination ?? '');
-    _descriptionController =
-        TextEditingController(text: trip?.description ?? '');
+    _tripNameController = TextEditingController(text: trip?.tripName ?? '');
+    _destinationController = TextEditingController(
+      text: trip?.destination ?? '',
+    );
+    _descriptionController = TextEditingController(
+      text: trip?.description ?? '',
+    );
 
     _startDate = trip?.startDate;
     _endDate = trip?.endDate;
@@ -112,8 +113,7 @@ class TripFormState extends State<TripForm> {
         _endDate = picked;
       }
 
-      _dateError =
-          TripValidators.validateDates(_startDate, _endDate);
+      _dateError = TripValidators.validateDates(_startDate, _endDate);
     });
   }
 
@@ -124,8 +124,7 @@ class TripFormState extends State<TripForm> {
     if (form == null) return;
 
     final formIsValid = form.validate();
-    final dateError =
-    TripValidators.validateDates(_startDate, _endDate);
+    final dateError = TripValidators.validateDates(_startDate, _endDate);
 
     setState(() => _dateError = dateError);
 
@@ -164,10 +163,7 @@ class TripFormState extends State<TripForm> {
       prefixIcon: Icon(icon, color: _formPurple),
       filled: true,
       fillColor: const Color(0xFFFBFAFF),
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 18,
-      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(15),
         borderSide: const BorderSide(color: Color(0xFFE8E1FA)),
@@ -178,10 +174,7 @@ class TripFormState extends State<TripForm> {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(15),
-        borderSide: const BorderSide(
-          color: _formPurple,
-          width: 1.7,
-        ),
+        borderSide: const BorderSide(color: _formPurple, width: 1.7),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(15),
@@ -189,10 +182,7 @@ class TripFormState extends State<TripForm> {
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(15),
-        borderSide: const BorderSide(
-          color: Colors.red,
-          width: 1.5,
-        ),
+        borderSide: const BorderSide(color: Colors.red, width: 1.5),
       ),
     );
   }
@@ -244,8 +234,7 @@ class TripFormState extends State<TripForm> {
             onChanged: _isSubmitting
                 ? null
                 : (value) => setState(() => _tripType = value),
-            validator: (value) =>
-            value == null ? 'Choose a trip type.' : null,
+            validator: (value) => value == null ? 'Choose a trip type.' : null,
           ),
           const SizedBox(height: 22),
 
@@ -310,8 +299,7 @@ class TripFormState extends State<TripForm> {
               style: FilledButton.styleFrom(
                 backgroundColor: _formPurple,
                 foregroundColor: Colors.white,
-                disabledBackgroundColor:
-                _formPurple.withValues(alpha: 0.5),
+                disabledBackgroundColor: _formPurple.withValues(alpha: 0.5),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
                 ),
@@ -319,27 +307,27 @@ class TripFormState extends State<TripForm> {
               ),
               child: _isSubmitting
                   ? const SizedBox(
-                height: 22,
-                width: 22,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2.5,
-                  color: Colors.white,
-                ),
-              )
+                      height: 22,
+                      width: 22,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.5,
+                        color: Colors.white,
+                      ),
+                    )
                   : Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.check_circle_outline_rounded),
-                  const SizedBox(width: 9),
-                  Text(
-                    widget.submitLabel,
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w800,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.check_circle_outline_rounded),
+                        const SizedBox(width: 9),
+                        Text(
+                          widget.submitLabel,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
             ),
           ),
         ],
@@ -366,21 +354,13 @@ class _DateField extends StatelessWidget {
       style: OutlinedButton.styleFrom(
         foregroundColor: _formDarkPurple,
         backgroundColor: const Color(0xFFFBFAFF),
-        padding: const EdgeInsets.symmetric(
-          horizontal: 15,
-          vertical: 17,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 17),
         side: const BorderSide(color: Color(0xFFE8E1FA)),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       ),
       child: Row(
         children: [
-          const Icon(
-            Icons.calendar_month_rounded,
-            color: _formPurple,
-          ),
+          const Icon(Icons.calendar_month_rounded, color: _formPurple),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -388,10 +368,7 @@ class _DateField extends StatelessWidget {
               children: [
                 Text(
                   label,
-                  style: const TextStyle(
-                    color: _formMuted,
-                    fontSize: 12,
-                  ),
+                  style: const TextStyle(color: _formMuted, fontSize: 12),
                 ),
                 const SizedBox(height: 4),
                 Text(
@@ -405,10 +382,7 @@ class _DateField extends StatelessWidget {
               ],
             ),
           ),
-          const Icon(
-            Icons.keyboard_arrow_down_rounded,
-            color: _formMuted,
-          ),
+          const Icon(Icons.keyboard_arrow_down_rounded, color: _formMuted),
         ],
       ),
     );

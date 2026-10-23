@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:voyage_flutter/features/auth/services/auth_service.dart';
 import 'package:voyage_flutter/features/auth/services/auth_validators.dart';
@@ -59,9 +58,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
           ..showSnackBar(
-            SnackBar(
-              content: Text(AuthService.errorMessage(error)),
-            ),
+            SnackBar(content: Text(AuthService.errorMessage(error))),
           );
       }
     } finally {
@@ -82,10 +79,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         leading: IconButton(
           tooltip: 'Go back',
           onPressed: () => Navigator.of(context).maybePop(),
-          icon: const Icon(
-            Icons.arrow_back_rounded,
-            color: _registerText,
-          ),
+          icon: const Icon(Icons.arrow_back_rounded, color: _registerText),
         ),
         title: const Text(
           'Create account',
@@ -109,12 +103,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   vertical: 24,
                 ),
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    maxWidth: 1080,
-                  ),
-                  child: isWide
-                      ? _buildWideLayout()
-                      : _buildMobileLayout(),
+                  constraints: const BoxConstraints(maxWidth: 1080),
+                  child: isWide ? _buildWideLayout() : _buildMobileLayout(),
                 ),
               ),
             );
@@ -127,9 +117,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget _buildMobileLayout() {
     return Center(
       child: ConstrainedBox(
-        constraints: const BoxConstraints(
-          maxWidth: 440,
-        ),
+        constraints: const BoxConstraints(maxWidth: 440),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -148,10 +136,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Expanded(
-          flex: 10,
-          child: _buildBrandHeader(compact: false),
-        ),
+        Expanded(flex: 10, child: _buildBrandHeader(compact: false)),
         const SizedBox(width: 42),
         Expanded(
           flex: 9,
@@ -160,9 +145,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(28),
-              border: Border.all(
-                color: const Color(0xFFECE8F5),
-              ),
+              border: Border.all(color: const Color(0xFFECE8F5)),
               boxShadow: [
                 BoxShadow(
                   color: _registerDarkPurple.withValues(alpha: 0.06),
@@ -190,11 +173,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       padding: EdgeInsets.all(compact ? 24 : 32),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [
-            Color(0xFF7655F5),
-            Color(0xFF5734C9),
-            Color(0xFF39216F),
-          ],
+          colors: [Color(0xFF7655F5), Color(0xFF5734C9), Color(0xFF39216F)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -264,8 +243,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
           const SizedBox(height: 14),
           Text(
             'Create your account to organize trips, '
-                'plan itineraries, and keep every journey '
-                'in one place.',
+            'plan itineraries, and keep every journey '
+            'in one place.',
             style: TextStyle(
               color: Colors.white.withValues(alpha: 0.83),
               fontSize: 13,
@@ -278,17 +257,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.11),
               borderRadius: BorderRadius.circular(18),
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.17),
-              ),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.17)),
             ),
             child: const Row(
               children: [
-                Icon(
-                  Icons.public_rounded,
-                  color: Colors.white,
-                  size: 29,
-                ),
+                Icon(Icons.public_rounded, color: Colors.white, size: 29),
                 SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -305,10 +278,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       SizedBox(height: 5),
                       Text(
                         'Your next adventure awaits.',
-                        style: TextStyle(
-                          color: Colors.white70,
-                          fontSize: 11,
-                        ),
+                        style: TextStyle(color: Colors.white70, fontSize: 11),
                       ),
                     ],
                   ),
@@ -339,11 +309,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           const SizedBox(height: 8),
           const Text(
             'Set up your account and start planning.',
-            style: TextStyle(
-              color: _registerMuted,
-              fontSize: 13,
-              height: 1.5,
-            ),
+            style: TextStyle(color: _registerMuted, fontSize: 13, height: 1.5),
           ),
           const SizedBox(height: 23),
 
@@ -408,8 +374,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               obscure: _obscureConfirmPassword,
               onToggleVisibility: () {
                 setState(() {
-                  _obscureConfirmPassword =
-                  !_obscureConfirmPassword;
+                  _obscureConfirmPassword = !_obscureConfirmPassword;
                 });
               },
             ),
@@ -440,30 +405,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               child: _isSubmitting
                   ? const SizedBox(
-                width: 22,
-                height: 22,
-                child: CircularProgressIndicator(
-                  color: Colors.white,
-                  strokeWidth: 2.2,
-                ),
-              )
+                      width: 22,
+                      height: 22,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2.2,
+                      ),
+                    )
                   : const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Create my account',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Create my account',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        SizedBox(width: 9),
+                        Icon(Icons.arrow_forward_rounded, size: 19),
+                      ],
                     ),
-                  ),
-                  SizedBox(width: 9),
-                  Icon(
-                    Icons.arrow_forward_rounded,
-                    size: 19,
-                  ),
-                ],
-              ),
             ),
           ),
         ],
@@ -490,47 +452,33 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }) {
     return InputDecoration(
       hintText: hint,
-      prefixIcon: Icon(
-        icon,
-        color: _registerPurple,
-        size: 21,
-      ),
+      prefixIcon: Icon(icon, color: _registerPurple, size: 21),
       suffixIcon: onToggleVisibility == null
           ? null
           : IconButton(
-        tooltip: obscure ? 'Show password' : 'Hide password',
-        onPressed: onToggleVisibility,
-        icon: Icon(
-          obscure
-              ? Icons.visibility_outlined
-              : Icons.visibility_off_outlined,
-          color: _registerMuted,
-        ),
-      ),
+              tooltip: obscure ? 'Show password' : 'Hide password',
+              onPressed: onToggleVisibility,
+              icon: Icon(
+                obscure
+                    ? Icons.visibility_outlined
+                    : Icons.visibility_off_outlined,
+                color: _registerMuted,
+              ),
+            ),
       filled: true,
       fillColor: const Color(0xFFFAF9FD),
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: 15,
-        vertical: 17,
-      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 17),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(15),
-        borderSide: const BorderSide(
-          color: Color(0xFFE7E2F1),
-        ),
+        borderSide: const BorderSide(color: Color(0xFFE7E2F1)),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(15),
-        borderSide: const BorderSide(
-          color: Color(0xFFE7E2F1),
-        ),
+        borderSide: const BorderSide(color: Color(0xFFE7E2F1)),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(15),
-        borderSide: const BorderSide(
-          color: _registerPurple,
-          width: 1.6,
-        ),
+        borderSide: const BorderSide(color: _registerPurple, width: 1.6),
       ),
     );
   }
@@ -540,11 +488,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       children: [
         Row(
           children: [
-            Expanded(
-              child: Divider(
-                color: Color(0xFFE7E2F1),
-              ),
-            ),
+            Expanded(child: Divider(color: Color(0xFFE7E2F1))),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 13),
               child: Text(
@@ -557,11 +501,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
             ),
-            Expanded(
-              child: Divider(
-                color: Color(0xFFE7E2F1),
-              ),
-            ),
+            Expanded(child: Divider(color: Color(0xFFE7E2F1))),
           ],
         ),
         SizedBox(height: 18),

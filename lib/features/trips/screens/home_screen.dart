@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
@@ -15,11 +14,7 @@ const Color _background = Color(0xFFF8F7FC);
 const Color _mutedText = Color(0xFF77738A);
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({
-    required this.user,
-    required this.authService,
-    super.key,
-  });
+  const HomeScreen({required this.user, required this.authService, super.key});
 
   final firebase_auth.User user;
   final AuthService authService;
@@ -43,9 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
         .doc(widget.user.uid)
         .snapshots();
 
-    _tripsStream = TripService().getUserTrips(
-      ownerId: widget.user.uid,
-    );
+    _tripsStream = TripService().getUserTrips(ownerId: widget.user.uid);
   }
 
   Future<void> _logout() async {
@@ -60,9 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
           ..showSnackBar(
-            SnackBar(
-              content: Text(AuthService.errorMessage(error)),
-            ),
+            SnackBar(content: Text(AuthService.errorMessage(error))),
           );
       }
     } finally {
@@ -73,27 +64,21 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _openCreateTrip() {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => const CreateTripScreen(),
-      ),
-    );
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute<void>(builder: (_) => const CreateTripScreen()));
   }
 
   void _openTrips() {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => const TripsScreen(),
-      ),
-    );
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute<void>(builder: (_) => const TripsScreen()));
   }
 
   void _openMap() {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => const MapScreen(),
-      ),
-    );
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute<void>(builder: (_) => const MapScreen()));
   }
 
   DateTime _dateOnly(DateTime date) {
@@ -164,19 +149,15 @@ class _HomeScreenState extends State<HomeScreen> {
               style: IconButton.styleFrom(
                 backgroundColor: Colors.white,
                 foregroundColor: _darkPurple,
-                side: const BorderSide(
-                  color: Color(0xFFECE8F5),
-                ),
+                side: const BorderSide(color: Color(0xFFECE8F5)),
                 fixedSize: const Size(46, 46),
               ),
               icon: _isLoggingOut
                   ? const SizedBox(
-                width: 19,
-                height: 19,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                ),
-              )
+                      width: 19,
+                      height: 19,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
                   : const Icon(Icons.logout_rounded),
             ),
           ),
@@ -205,11 +186,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       builder: (context, snapshot) {
                         final nameValue = snapshot.data?.data()?['name'];
 
-                        final name = nameValue is String &&
-                            nameValue.trim().isNotEmpty
+                        final name =
+                            nameValue is String && nameValue.trim().isNotEmpty
                             ? nameValue.trim()
-                            : widget.user.email?.split('@').first ??
-                            'Traveler';
+                            : widget.user.email?.split('@').first ?? 'Traveler';
 
                         return _WelcomeHero(
                           name: name,
@@ -229,9 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       builder: (context, snapshot) {
                         if (snapshot.hasError) {
                           return _DashboardCounts(
-                            message: TripService.userMessage(
-                              snapshot.error!,
-                            ),
+                            message: TripService.userMessage(snapshot.error!),
                           );
                         }
 
@@ -239,9 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           return const Card(
                             child: Padding(
                               padding: EdgeInsets.all(28),
-                              child: Center(
-                                child: CircularProgressIndicator(),
-                              ),
+                              child: Center(child: CircularProgressIndicator()),
                             ),
                           );
                         }
@@ -256,13 +232,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         final trips = snapshot.data!;
 
                         final upcomingCount = trips.where((trip) {
-                          return !_dateOnly(trip.endDate)
-                              .isBefore(todayStart);
+                          return !_dateOnly(trip.endDate).isBefore(todayStart);
                         }).length;
 
                         final completedCount = trips.where((trip) {
-                          return _dateOnly(trip.endDate)
-                              .isBefore(todayStart);
+                          return _dateOnly(trip.endDate).isBefore(todayStart);
                         }).length;
 
                         return Row(
@@ -307,8 +281,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         final myTripsCard = _ActionCard(
                           icon: Icons.luggage_rounded,
                           title: 'My Trips',
-                          description:
-                          'Explore and manage your journeys.',
+                          description: 'Explore and manage your journeys.',
                           buttonLabel: 'View my trips',
                           iconBackground: const Color(0xFFECE6FF),
                           iconColor: _purple,
@@ -318,8 +291,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         final createTripCard = _ActionCard(
                           icon: Icons.add_location_alt_rounded,
                           title: 'Plan a trip',
-                          description:
-                          'Create a new adventure, your way.',
+                          description: 'Create a new adventure, your way.',
                           buttonLabel: 'Start planning',
                           iconBackground: const Color(0xFFFFEEDB),
                           iconColor: const Color(0xFFC57A23),
@@ -330,7 +302,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           icon: Icons.map_rounded,
                           title: 'Explore Map',
                           description:
-                          'Discover destinations on an interactive map.',
+                              'Discover destinations on an interactive map.',
                           buttonLabel: 'Open map',
                           iconBackground: const Color(0xFFE4F7EF),
                           iconColor: const Color(0xFF168A68),
@@ -371,9 +343,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: const Color(0xFFECE8F5),
-                        ),
+                        border: Border.all(color: const Color(0xFFECE8F5)),
                       ),
                       child: Row(
                         children: [
@@ -463,11 +433,7 @@ class _WelcomeHero extends StatelessWidget {
       padding: EdgeInsets.all(isWide ? 32 : 24),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [
-            Color(0xFF7655F5),
-            Color(0xFF5734C9),
-            Color(0xFF39216F),
-          ],
+          colors: [Color(0xFF7655F5), Color(0xFF5734C9), Color(0xFF39216F)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -627,7 +593,7 @@ class _SectionHeading extends StatelessWidget {
             ],
           ),
         ),
-        if (trailing != null) trailing!,
+        ?trailing,
       ],
     );
   }
@@ -655,9 +621,7 @@ class _CountCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(
-          color: const Color(0xFFECE8F5),
-        ),
+        border: Border.all(color: const Color(0xFFECE8F5)),
         boxShadow: [
           BoxShadow(
             color: const Color(0xFF38216D).withValues(alpha: 0.035),
@@ -676,11 +640,7 @@ class _CountCard extends StatelessWidget {
               color: background,
               borderRadius: BorderRadius.circular(14),
             ),
-            child: Icon(
-              icon,
-              color: accent,
-              size: 23,
-            ),
+            child: Icon(icon, color: accent, size: 23),
           ),
           const SizedBox(height: 16),
           Text(
@@ -734,9 +694,7 @@ class _ActionCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(22),
-        border: Border.all(
-          color: const Color(0xFFECE8F5),
-        ),
+        border: Border.all(color: const Color(0xFFECE8F5)),
         boxShadow: [
           BoxShadow(
             color: const Color(0xFF38216D).withValues(alpha: 0.035),
@@ -755,11 +713,7 @@ class _ActionCard extends StatelessWidget {
               color: iconBackground,
               borderRadius: BorderRadius.circular(16),
             ),
-            child: Icon(
-              icon,
-              size: 26,
-              color: iconColor,
-            ),
+            child: Icon(icon, size: 26, color: iconColor),
           ),
           const SizedBox(height: 16),
           Text(
@@ -787,9 +741,7 @@ class _ActionCard extends StatelessWidget {
               style: OutlinedButton.styleFrom(
                 minimumSize: const Size(0, 45),
                 foregroundColor: _purple,
-                side: const BorderSide(
-                  color: Color(0xFFDCD2FF),
-                ),
+                side: const BorderSide(color: Color(0xFFDCD2FF)),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(13),
                 ),
@@ -804,9 +756,7 @@ class _ActionCard extends StatelessWidget {
 }
 
 class _DashboardCounts extends StatelessWidget {
-  const _DashboardCounts({
-    required this.message,
-  });
+  const _DashboardCounts({required this.message});
 
   final String message;
 
@@ -817,16 +767,11 @@ class _DashboardCounts extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: const Color(0xFFECE8F5),
-        ),
+        border: Border.all(color: const Color(0xFFECE8F5)),
       ),
       child: Text(
         message,
-        style: const TextStyle(
-          color: _mutedText,
-          height: 1.5,
-        ),
+        style: const TextStyle(color: _mutedText, height: 1.5),
       ),
     );
   }

@@ -1,4 +1,3 @@
-
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
 import 'package:voyage_flutter/features/trips/screens/create_trip_screen.dart';
@@ -36,11 +35,9 @@ class _TripsScreenState extends State<TripsScreen> {
   }
 
   Future<void> _openCreateTrip() async {
-    await Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => const CreateTripScreen(),
-      ),
-    );
+    await Navigator.of(
+      context,
+    ).push(MaterialPageRoute<void>(builder: (_) => const CreateTripScreen()));
   }
 
   void _openTrip(Trip trip) {
@@ -61,153 +58,149 @@ class _TripsScreenState extends State<TripsScreen> {
         elevation: 0,
         title: const Text(
           'My Trips',
-          style: TextStyle(
-            color: _darkPurple,
-            fontWeight: FontWeight.w800,
-          ),
+          style: TextStyle(color: _darkPurple, fontWeight: FontWeight.w800),
         ),
         iconTheme: const IconThemeData(color: _darkPurple),
       ),
       body: _userId.isEmpty
           ? const _TripsMessage(
-        icon: Icons.lock_outline_rounded,
-        message: 'Sign in to view your trips.',
-      )
+              icon: Icons.lock_outline_rounded,
+              message: 'Sign in to view your trips.',
+            )
           : StreamBuilder<List<Trip>>(
-        stream: _tripsStream,
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return _TripsMessage(
-              icon: Icons.cloud_off_rounded,
-              message: TripService.userMessage(snapshot.error!),
-              showRetryHint: true,
-            );
-          }
+              stream: _tripsStream,
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return _TripsMessage(
+                    icon: Icons.cloud_off_rounded,
+                    message: TripService.userMessage(snapshot.error!),
+                    showRetryHint: true,
+                  );
+                }
 
-          if (!snapshot.hasData) {
-            return const Center(
-              child: CircularProgressIndicator(color: _purple),
-            );
-          }
+                if (!snapshot.hasData) {
+                  return const Center(
+                    child: CircularProgressIndicator(color: _purple),
+                  );
+                }
 
-          final trips = snapshot.data!;
+                final trips = snapshot.data!;
 
-          return LayoutBuilder(
-            builder: (context, constraints) {
-              final wide = constraints.maxWidth >= 850;
+                return LayoutBuilder(
+                  builder: (context, constraints) {
+                    final wide = constraints.maxWidth >= 850;
 
-              return Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 1150),
-                  child: ListView(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: wide ? 32 : 18,
-                      vertical: 18,
-                    ),
-                    children: [
-                      _TripsHero(
-                        tripCount: trips.length,
-                        onCreate: _openCreateTrip,
-                      ),
-                      const SizedBox(height: 28),
-                      Row(
-                        children: [
-                          const Expanded(
-                            child: Column(
-                              crossAxisAlignment:
-                              CrossAxisAlignment.start,
+                    return Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 1150),
+                        child: ListView(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: wide ? 32 : 18,
+                            vertical: 18,
+                          ),
+                          children: [
+                            _TripsHero(
+                              tripCount: trips.length,
+                              onCreate: _openCreateTrip,
+                            ),
+                            const SizedBox(height: 28),
+                            Row(
                               children: [
-                                Text(
-                                  'Your adventures',
-                                  style: TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w800,
-                                    color: _darkPurple,
+                                const Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Your adventures',
+                                        style: TextStyle(
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.w800,
+                                          color: _darkPurple,
+                                        ),
+                                      ),
+                                      SizedBox(height: 5),
+                                      Text(
+                                        'All your journeys, in one place.',
+                                        style: TextStyle(
+                                          color: _mutedText,
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                SizedBox(height: 5),
-                                Text(
-                                  'All your journeys, in one place.',
-                                  style: TextStyle(
-                                    color: _mutedText,
-                                    fontSize: 13,
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 13,
+                                    vertical: 9,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFEDE7FF),
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                  child: Text(
+                                    '${trips.length} ${trips.length == 1 ? 'trip' : 'trips'}',
+                                    style: const TextStyle(
+                                      color: _purple,
+                                      fontWeight: FontWeight.w800,
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 13,
-                              vertical: 9,
-                            ),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFEDE7FF),
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                            child: Text(
-                              '${trips.length} ${trips.length == 1 ? 'trip' : 'trips'}',
-                              style: const TextStyle(
-                                color: _purple,
-                                fontWeight: FontWeight.w800,
+                            const SizedBox(height: 18),
+                            if (trips.isEmpty)
+                              _EmptyTrips(onCreate: _openCreateTrip)
+                            else if (wide)
+                              GridView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: trips.length,
+                                gridDelegate:
+                                    const SliverGridDelegateWithMaxCrossAxisExtent(
+                                      maxCrossAxisExtent: 520,
+                                      mainAxisExtent: 205,
+                                      crossAxisSpacing: 16,
+                                      mainAxisSpacing: 16,
+                                    ),
+                                itemBuilder: (context, index) {
+                                  final trip = trips[index];
+                                  return TripCard(
+                                    trip: trip,
+                                    onTap: () => _openTrip(trip),
+                                  );
+                                },
+                              )
+                            else
+                              ...trips.map(
+                                (trip) => Padding(
+                                  padding: const EdgeInsets.only(bottom: 14),
+                                  child: TripCard(
+                                    trip: trip,
+                                    onTap: () => _openTrip(trip),
+                                  ),
+                                ),
+                              ),
+                            const SizedBox(height: 28),
+                            const Center(
+                              child: Text(
+                                'Every journey starts somewhere. ✦',
+                                style: TextStyle(
+                                  color: _mutedText,
+                                  fontSize: 12,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 18),
-                      if (trips.isEmpty)
-                        _EmptyTrips(onCreate: _openCreateTrip)
-                      else if (wide)
-                        GridView.builder(
-                          shrinkWrap: true,
-                          physics:
-                          const NeverScrollableScrollPhysics(),
-                          itemCount: trips.length,
-                          gridDelegate:
-                          const SliverGridDelegateWithMaxCrossAxisExtent(
-                            maxCrossAxisExtent: 520,
-                            mainAxisExtent: 205,
-                            crossAxisSpacing: 16,
-                            mainAxisSpacing: 16,
-                          ),
-                          itemBuilder: (context, index) {
-                            final trip = trips[index];
-                            return TripCard(
-                              trip: trip,
-                              onTap: () => _openTrip(trip),
-                            );
-                          },
-                        )
-                      else
-                        ...trips.map(
-                              (trip) => Padding(
-                            padding: const EdgeInsets.only(bottom: 14),
-                            child: TripCard(
-                              trip: trip,
-                              onTap: () => _openTrip(trip),
-                            ),
-                          ),
-                        ),
-                      const SizedBox(height: 28),
-                      const Center(
-                        child: Text(
-                          'Every journey starts somewhere. ✦',
-                          style: TextStyle(
-                            color: _mutedText,
-                            fontSize: 12,
-                          ),
+                            const SizedBox(height: 16),
+                          ],
                         ),
                       ),
-                      const SizedBox(height: 16),
-                    ],
-                  ),
-                ),
-              );
-            },
-          );
-        },
-      ),
+                    );
+                  },
+                );
+              },
+            ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _openCreateTrip,
         backgroundColor: _purple,
@@ -224,10 +217,7 @@ class _TripsScreenState extends State<TripsScreen> {
 }
 
 class _TripsHero extends StatelessWidget {
-  const _TripsHero({
-    required this.tripCount,
-    required this.onCreate,
-  });
+  const _TripsHero({required this.tripCount, required this.onCreate});
 
   final int tripCount;
   final VoidCallback onCreate;
@@ -297,11 +287,8 @@ class _TripsHero extends StatelessWidget {
               const SizedBox(height: 10),
               Text(
                 '$tripCount ${tripCount == 1 ? 'journey' : 'journeys'} planned. '
-                    'More memories waiting.',
-                style: const TextStyle(
-                  color: Colors.white70,
-                  fontSize: 13,
-                ),
+                'More memories waiting.',
+                style: const TextStyle(color: Colors.white70, fontSize: 13),
               ),
               const SizedBox(height: 22),
               FilledButton.icon(
@@ -354,11 +341,7 @@ class _EmptyTrips extends StatelessWidget {
               color: const Color(0xFFF0EBFF),
               borderRadius: BorderRadius.circular(24),
             ),
-            child: const Icon(
-              Icons.luggage_rounded,
-              color: _purple,
-              size: 37,
-            ),
+            child: const Icon(Icons.luggage_rounded, color: _purple, size: 37),
           ),
           const SizedBox(height: 18),
           const Text(
@@ -373,12 +356,9 @@ class _EmptyTrips extends StatelessWidget {
           const SizedBox(height: 8),
           const Text(
             'Create your first trip and start planning '
-                'an unforgettable journey.',
+            'an unforgettable journey.',
             textAlign: TextAlign.center,
-            style: TextStyle(
-              color: _mutedText,
-              height: 1.5,
-            ),
+            style: TextStyle(color: _mutedText, height: 1.5),
           ),
           const SizedBox(height: 20),
           FilledButton.icon(
@@ -386,10 +366,7 @@ class _EmptyTrips extends StatelessWidget {
             style: FilledButton.styleFrom(
               backgroundColor: _purple,
               foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 14,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
             ),
             icon: const Icon(Icons.add_rounded),
             label: const Text('Create your first trip'),

@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
@@ -47,9 +46,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
 
   Future<void> _editTrip(Trip trip) async {
     final wasUpdated = await Navigator.of(context).push<bool>(
-      MaterialPageRoute<bool>(
-        builder: (_) => EditTripScreen(trip: trip),
-      ),
+      MaterialPageRoute<bool>(builder: (_) => EditTripScreen(trip: trip)),
     );
 
     if (wasUpdated == true && mounted) {
@@ -61,13 +58,11 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: const Text('Delete this trip?'),
         content: const Text(
           'This trip document will be deleted. Related members, activities, '
-              'votes, and expenses will not be deleted.',
+          'votes, and expenses will not be deleted.',
         ),
         actions: [
           TextButton(
@@ -75,9 +70,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
             child: const Text('Cancel'),
           ),
           FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: Colors.red.shade600,
-            ),
+            style: FilledButton.styleFrom(backgroundColor: Colors.red.shade600),
             onPressed: () => Navigator.of(context).pop(true),
             child: const Text('Delete trip'),
           ),
@@ -99,9 +92,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
 
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
-          ..showSnackBar(
-            const SnackBar(content: Text('Trip deleted.')),
-          );
+          ..showSnackBar(const SnackBar(content: Text('Trip deleted.')));
       }
     } on TripServiceException catch (error) {
       _showError(error.message);
@@ -123,9 +114,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
   }
 
   void _openScreen(Widget screen) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(builder: (_) => screen),
-    );
+    Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => screen));
   }
 
   @override
@@ -138,10 +127,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
         elevation: 0,
         title: const Text(
           'Trip Details',
-          style: TextStyle(
-            color: _darkPurple,
-            fontWeight: FontWeight.w800,
-          ),
+          style: TextStyle(color: _darkPurple, fontWeight: FontWeight.w800),
         ),
         iconTheme: const IconThemeData(color: _darkPurple),
       ),
@@ -171,7 +157,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
 
           final isOwner =
               firebase_auth.FirebaseAuth.instance.currentUser?.uid ==
-                  trip.ownerId;
+              trip.ownerId;
 
           return LayoutBuilder(
             builder: (context, constraints) {
@@ -193,10 +179,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                         subtitle: 'Everything you need for your journey.',
                       ),
                       const SizedBox(height: 14),
-                      _TripInformation(
-                        trip: trip,
-                        wide: wide,
-                      ),
+                      _TripInformation(trip: trip, wide: wide),
                       const SizedBox(height: 28),
                       const _SectionHeading(
                         title: 'Plan together',
@@ -215,17 +198,15 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                             title: 'Members',
                             subtitle: 'Your travel group',
                             icon: Icons.people_alt_rounded,
-                            onTap: () => _openScreen(
-                              MembersScreen(tripId: trip.tripId),
-                            ),
+                            onTap: () =>
+                                _openScreen(MembersScreen(tripId: trip.tripId)),
                           ),
                           _FeatureCard(
                             title: 'Voting',
                             subtitle: 'Decide as a group',
                             icon: Icons.how_to_vote_rounded,
-                            onTap: () => _openScreen(
-                              VotingScreen(tripId: trip.tripId),
-                            ),
+                            onTap: () =>
+                                _openScreen(VotingScreen(tripId: trip.tripId)),
                           ),
                           _FeatureCard(
                             title: 'Expenses',
@@ -281,17 +262,15 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                           title: 'Delete trip',
                           subtitle: 'Permanently remove this trip',
                           isDestructive: true,
-                          onTap: _isDeleting
-                              ? null
-                              : () => _deleteTrip(trip),
+                          onTap: _isDeleting ? null : () => _deleteTrip(trip),
                           trailing: _isDeleting
                               ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                            ),
-                          )
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                )
                               : null,
                         ),
                       ] else
@@ -307,10 +286,7 @@ class _TripDetailsScreenState extends State<TripDetailsScreen> {
                         child: Text(
                           'Made for the journey. Powered by Voyage.',
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: _mutedText,
-                          ),
+                          style: TextStyle(fontSize: 12, color: _mutedText),
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -377,11 +353,7 @@ class _TripHero extends StatelessWidget {
                 child: const Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
-                      Icons.luggage_rounded,
-                      size: 15,
-                      color: Colors.white,
-                    ),
+                    Icon(Icons.luggage_rounded, size: 15, color: Colors.white),
                     SizedBox(width: 7),
                     Text(
                       'YOUR NEXT ADVENTURE',
@@ -450,10 +422,7 @@ class _TripHero extends StatelessWidget {
 }
 
 class _HeroPill extends StatelessWidget {
-  const _HeroPill({
-    required this.icon,
-    required this.text,
-  });
+  const _HeroPill({required this.icon, required this.text});
 
   final IconData icon;
   final String text;
@@ -486,10 +455,7 @@ class _HeroPill extends StatelessWidget {
 }
 
 class _SectionHeading extends StatelessWidget {
-  const _SectionHeading({
-    required this.title,
-    required this.subtitle,
-  });
+  const _SectionHeading({required this.title, required this.subtitle});
 
   final String title;
   final String subtitle;
@@ -508,23 +474,14 @@ class _SectionHeading extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 5),
-        Text(
-          subtitle,
-          style: const TextStyle(
-            color: _mutedText,
-            fontSize: 13,
-          ),
-        ),
+        Text(subtitle, style: const TextStyle(color: _mutedText, fontSize: 13)),
       ],
     );
   }
 }
 
 class _TripInformation extends StatelessWidget {
-  const _TripInformation({
-    required this.trip,
-    required this.wide,
-  });
+  const _TripInformation({required this.trip, required this.wide});
 
   final Trip trip;
   final bool wide;
@@ -563,10 +520,7 @@ class _TripInformation extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 17),
             child: Divider(height: 1, color: Color(0xFFF0EDF7)),
           ),
-          _OwnerInformation(
-            tripId: trip.tripId,
-            ownerId: trip.ownerId,
-          ),
+          _OwnerInformation(tripId: trip.tripId, ownerId: trip.ownerId),
           if (trip.description?.isNotEmpty ?? false) ...[
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 15),
@@ -575,11 +529,7 @@ class _TripInformation extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(
-                  Icons.notes_rounded,
-                  color: _purple,
-                  size: 20,
-                ),
+                const Icon(Icons.notes_rounded, color: _purple, size: 20),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -597,10 +547,7 @@ class _TripInformation extends StatelessWidget {
                       const SizedBox(height: 6),
                       Text(
                         trip.description!,
-                        style: const TextStyle(
-                          color: _darkPurple,
-                          height: 1.5,
-                        ),
+                        style: const TextStyle(color: _darkPurple, height: 1.5),
                       ),
                     ],
                   ),
@@ -671,10 +618,7 @@ class _InfoTile extends StatelessWidget {
 }
 
 class _OwnerInformation extends StatelessWidget {
-  const _OwnerInformation({
-    required this.tripId,
-    required this.ownerId,
-  });
+  const _OwnerInformation({required this.tripId, required this.ownerId});
 
   final String tripId;
   final String ownerId;
@@ -704,10 +648,7 @@ class _OwnerInformation extends StatelessWidget {
                 color: const Color(0xFFF0EBFF),
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: const Icon(
-                Icons.person_rounded,
-                color: _purple,
-              ),
+              child: const Icon(Icons.person_rounded, color: _purple),
             ),
             const SizedBox(width: 12),
             const Expanded(
@@ -726,10 +667,7 @@ class _OwnerInformation extends StatelessWidget {
                   SizedBox(height: 4),
                   Text(
                     'Managed by',
-                    style: TextStyle(
-                      color: _mutedText,
-                      fontSize: 12,
-                    ),
+                    style: TextStyle(color: _mutedText, fontSize: 12),
                   ),
                 ],
               ),
@@ -811,10 +749,7 @@ class _FeatureCard extends StatelessWidget {
                     subtitle,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: _mutedText,
-                      fontSize: 11,
-                    ),
+                    style: const TextStyle(color: _mutedText, fontSize: 11),
                   ),
                 ],
               ),
@@ -889,20 +824,13 @@ class _ManagementCard extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       subtitle,
-                      style: const TextStyle(
-                        color: _mutedText,
-                        fontSize: 12,
-                      ),
+                      style: const TextStyle(color: _mutedText, fontSize: 12),
                     ),
                   ],
                 ),
               ),
               trailing ??
-                  Icon(
-                    Icons.arrow_forward_ios_rounded,
-                    size: 15,
-                    color: color,
-                  ),
+                  Icon(Icons.arrow_forward_ios_rounded, size: 15, color: color),
             ],
           ),
         ),
@@ -912,10 +840,7 @@ class _ManagementCard extends StatelessWidget {
 }
 
 class _DetailsMessage extends StatelessWidget {
-  const _DetailsMessage({
-    required this.message,
-    this.onRetry,
-  });
+  const _DetailsMessage({required this.message, this.onRetry});
 
   final String message;
   final VoidCallback? onRetry;
@@ -928,11 +853,7 @@ class _DetailsMessage extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
-              Icons.explore_off_rounded,
-              color: _purple,
-              size: 48,
-            ),
+            const Icon(Icons.explore_off_rounded, color: _purple, size: 48),
             const SizedBox(height: 16),
             Text(
               message,
@@ -944,10 +865,7 @@ class _DetailsMessage extends StatelessWidget {
             ),
             if (onRetry != null) ...[
               const SizedBox(height: 16),
-              FilledButton(
-                onPressed: onRetry,
-                child: const Text('Retry'),
-              ),
+              FilledButton(onPressed: onRetry, child: const Text('Retry')),
             ],
           ],
         ),

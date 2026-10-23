@@ -87,9 +87,7 @@ class _VoyageAppState extends State<VoyageApp> {
           margin: EdgeInsets.zero,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(18),
-            side: const BorderSide(
-              color: Color(0xFFECE8F5),
-            ),
+            side: const BorderSide(color: Color(0xFFECE8F5)),
           ),
           clipBehavior: Clip.antiAlias,
         ),
@@ -103,35 +101,23 @@ class _VoyageAppState extends State<VoyageApp> {
           ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
-            borderSide: const BorderSide(
-              color: Color(0xFFE4DEEF),
-            ),
+            borderSide: const BorderSide(color: Color(0xFFE4DEEF)),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
-            borderSide: const BorderSide(
-              color: Color(0xFFE4DEEF),
-            ),
+            borderSide: const BorderSide(color: Color(0xFFE4DEEF)),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
-            borderSide: const BorderSide(
-              color: Color(0xFF6D4AFF),
-              width: 1.8,
-            ),
+            borderSide: const BorderSide(color: Color(0xFF6D4AFF), width: 1.8),
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
-            borderSide: const BorderSide(
-              color: Colors.redAccent,
-            ),
+            borderSide: const BorderSide(color: Colors.redAccent),
           ),
           focusedErrorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
-            borderSide: const BorderSide(
-              color: Colors.redAccent,
-              width: 1.8,
-            ),
+            borderSide: const BorderSide(color: Colors.redAccent, width: 1.8),
           ),
         ),
 
@@ -154,9 +140,7 @@ class _VoyageAppState extends State<VoyageApp> {
           style: OutlinedButton.styleFrom(
             foregroundColor: const Color(0xFF6D4AFF),
             minimumSize: const Size(0, 50),
-            side: const BorderSide(
-              color: Color(0xFFD8CEF8),
-            ),
+            side: const BorderSide(color: Color(0xFFD8CEF8)),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(14),
             ),
@@ -164,9 +148,7 @@ class _VoyageAppState extends State<VoyageApp> {
         ),
 
         textButtonTheme: TextButtonThemeData(
-          style: TextButton.styleFrom(
-            foregroundColor: const Color(0xFF6D4AFF),
-          ),
+          style: TextButton.styleFrom(foregroundColor: const Color(0xFF6D4AFF)),
         ),
 
         snackBarTheme: SnackBarThemeData(
@@ -186,9 +168,7 @@ class _VoyageAppState extends State<VoyageApp> {
         builder: (context, snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
             return const Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
+              body: Center(child: CircularProgressIndicator()),
             );
           }
 
@@ -214,9 +194,7 @@ class _FirebaseConfigurationScreen extends StatelessWidget {
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24),
             child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                maxWidth: 480,
-              ),
+              constraints: const BoxConstraints(maxWidth: 480),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -245,7 +223,7 @@ class _FirebaseConfigurationScreen extends StatelessWidget {
                   const SizedBox(height: 12),
                   Text(
                     'Configure this app with FlutterFire CLI, '
-                        'then restart Voyage.',
+                    'then restart Voyage.',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Colors.black54,
                       height: 1.5,

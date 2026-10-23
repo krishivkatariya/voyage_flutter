@@ -9,10 +9,7 @@ import 'package:latlong2/latlong.dart';
 class MapScreen extends StatefulWidget {
   final String? destination;
 
-  const MapScreen({
-    super.key,
-    this.destination,
-  });
+  const MapScreen({super.key, this.destination});
 
   @override
   State<MapScreen> createState() => _MapScreenState();
@@ -36,10 +33,8 @@ class _MapScreenState extends State<MapScreen> {
 
   final Distance _distanceCalculator = const Distance();
 
-  final TextEditingController _startController =
-  TextEditingController();
-  final TextEditingController _destinationController =
-  TextEditingController();
+  final TextEditingController _startController = TextEditingController();
+  final TextEditingController _destinationController = TextEditingController();
 
   LatLng? _start;
   LatLng? _end;
@@ -61,11 +56,7 @@ class _MapScreenState extends State<MapScreen> {
   double? get _straightDistanceKm {
     if (_start == null || _end == null) return null;
 
-    return _distanceCalculator.as(
-      LengthUnit.Kilometer,
-      _start!,
-      _end!,
-    );
+    return _distanceCalculator.as(LengthUnit.Kilometer, _start!, _end!);
   }
 
   @override
@@ -91,22 +82,15 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Future<LatLng?> _geocode(String query) async {
-    final uri = Uri.https(
-      'nominatim.openstreetmap.org',
-      '/search',
-      {
-        'q': query,
-        'format': 'jsonv2',
-        'limit': '1',
-      },
-    );
+    final uri = Uri.https('nominatim.openstreetmap.org', '/search', {
+      'q': query,
+      'format': 'jsonv2',
+      'limit': '1',
+    });
 
-    final response = await http.get(
-      uri,
-      headers: {
-        'User-Agent': 'VoyageTripPlanner/1.0',
-      },
-    ).timeout(const Duration(seconds: 15));
+    final response = await http
+        .get(uri, headers: {'User-Agent': 'VoyageTripPlanner/1.0'})
+        .timeout(const Duration(seconds: 15));
 
     if (response.statusCode != 200) {
       throw Exception('Location search is temporarily unavailable.');
@@ -268,15 +252,10 @@ class _MapScreenState extends State<MapScreen> {
         '/route/v1/driving/'
             '${start.longitude},${start.latitude};'
             '${end.longitude},${end.latitude}',
-        {
-          'overview': 'full',
-          'geometries': 'geojson',
-        },
+        {'overview': 'full', 'geometries': 'geojson'},
       );
 
-      final response = await http.get(uri).timeout(
-        const Duration(seconds: 25),
-      );
+      final response = await http.get(uri).timeout(const Duration(seconds: 25));
 
       if (response.statusCode != 200) {
         throw Exception('Routing service is unavailable.');
@@ -306,10 +285,8 @@ class _MapScreenState extends State<MapScreen> {
 
       setState(() {
         _routePoints = points;
-        _roadDistanceKm =
-            (route['distance'] as num).toDouble() / 1000;
-        _durationMinutes =
-            (route['duration'] as num).toDouble() / 60;
+        _roadDistanceKm = (route['distance'] as num).toDouble() / 1000;
+        _durationMinutes = (route['duration'] as num).toDouble() / 60;
       });
 
       if (_mapReady && points.isNotEmpty) {
@@ -325,7 +302,7 @@ class _MapScreenState extends State<MapScreen> {
 
       setState(() {
         _error =
-        'Could not calculate the driving route. '
+            'Could not calculate the driving route. '
             'Check both locations and try again.';
       });
     } finally {
@@ -362,19 +339,11 @@ class _MapScreenState extends State<MapScreen> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 8,
-            vertical: 4,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(8),
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 5,
-              ),
-            ],
+            boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 5)],
           ),
           child: Text(
             label,
@@ -391,11 +360,7 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
-  Widget _buildDistanceRow(
-      IconData icon,
-      String title,
-      String value,
-      ) {
+  Widget _buildDistanceRow(IconData icon, String title, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Row(
@@ -403,10 +368,7 @@ class _MapScreenState extends State<MapScreen> {
           Icon(icon, color: _purple, size: 20),
           const SizedBox(width: 10),
           Expanded(
-            child: Text(
-              title,
-              style: const TextStyle(color: Colors.black87),
-            ),
+            child: Text(title, style: const TextStyle(color: Colors.black87)),
           ),
           const SizedBox(width: 8),
           Flexible(
@@ -433,9 +395,7 @@ class _MapScreenState extends State<MapScreen> {
       padding: const EdgeInsets.fromLTRB(16, 15, 16, 12),
       decoration: const BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(22),
-        ),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
         boxShadow: [
           BoxShadow(
             color: Colors.black12,
@@ -464,10 +424,7 @@ class _MapScreenState extends State<MapScreen> {
                   : _end == null
                   ? 'Now select your destination.'
                   : 'Both locations selected.',
-              style: const TextStyle(
-                color: Colors.black54,
-                fontSize: 12,
-              ),
+              style: const TextStyle(color: Colors.black54, fontSize: 12),
             ),
             const SizedBox(height: 12),
             TextField(
@@ -482,12 +439,10 @@ class _MapScreenState extends State<MapScreen> {
                   onPressed: _searchingStart ? null : _searchStart,
                   icon: _searchingStart
                       ? const SizedBox(
-                    width: 18,
-                    height: 18,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                    ),
-                  )
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
                       : const Icon(Icons.search),
                 ),
                 border: OutlineInputBorder(
@@ -505,17 +460,13 @@ class _MapScreenState extends State<MapScreen> {
                 hintText: 'Search destination or city',
                 isDense: true,
                 suffixIcon: IconButton(
-                  onPressed: _searchingDestination
-                      ? null
-                      : _searchDestination,
+                  onPressed: _searchingDestination ? null : _searchDestination,
                   icon: _searchingDestination
                       ? const SizedBox(
-                    width: 18,
-                    height: 18,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                    ),
-                  )
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
                       : const Icon(Icons.search),
                 ),
                 border: OutlineInputBorder(
@@ -547,10 +498,7 @@ class _MapScreenState extends State<MapScreen> {
               const SizedBox(height: 8),
               Text(
                 _error!,
-                style: const TextStyle(
-                  color: Colors.red,
-                  fontSize: 12,
-                ),
+                style: const TextStyle(color: Colors.red, fontSize: 12),
               ),
             ],
             const SizedBox(height: 12),
@@ -566,19 +514,15 @@ class _MapScreenState extends State<MapScreen> {
                 Expanded(
                   flex: 2,
                   child: ElevatedButton.icon(
-                    onPressed: _start != null &&
-                        _end != null &&
-                        !_loadingRoute
+                    onPressed: _start != null && _end != null && !_loadingRoute
                         ? _calculateRoute
                         : null,
                     icon: _loadingRoute
                         ? const SizedBox(
-                      width: 17,
-                      height: 17,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                      ),
-                    )
+                            width: 17,
+                            height: 17,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
                         : const Icon(Icons.directions_car),
                     label: Text(
                       _loadingRoute ? 'Finding route...' : 'Find route',
@@ -595,11 +539,8 @@ class _MapScreenState extends State<MapScreen> {
             const SizedBox(height: 8),
             const Text(
               'Driving estimates use available road data and do not '
-                  'include live traffic.',
-              style: TextStyle(
-                fontSize: 10,
-                color: Colors.black54,
-              ),
+              'include live traffic.',
+              style: TextStyle(fontSize: 10, color: Colors.black54),
             ),
           ],
         ),
@@ -620,8 +561,7 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     final destination = widget.destination?.trim();
-    final hasTripDestination =
-        destination != null && destination.isNotEmpty;
+    final hasTripDestination = destination != null && destination.isNotEmpty;
 
     return Scaffold(
       backgroundColor: _background,
@@ -640,11 +580,7 @@ class _MapScreenState extends State<MapScreen> {
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
               child: Row(
                 children: [
-                  const Icon(
-                    Icons.explore,
-                    color: _purple,
-                    size: 28,
-                  ),
+                  const Icon(Icons.explore, color: _purple, size: 28),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Column(

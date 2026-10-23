@@ -37,6 +37,7 @@ class _AddActivityScreenState extends State<AddActivityScreen> {
         latitude: latitude,
         longitude: longitude,
       );
+
       if (mounted) {
         Navigator.of(context).pop(true);
       }
@@ -48,21 +49,46 @@ class _AddActivityScreenState extends State<AddActivityScreen> {
   }
 
   void _showError(String message) {
-    if (!mounted) {
-      return;
-    }
+    if (!mounted) return;
+
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(message)));
+      ..showSnackBar(
+        SnackBar(
+          content: Text(message),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Add Activity')),
-      body: ActivityForm(
-        submitLabel: 'Add activity',
-        onSubmit: _createActivity,
+      backgroundColor: const Color(0xFFF7F6FC),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFF7F6FC),
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        leading: IconButton(
+          tooltip: 'Go back',
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () => Navigator.of(context).maybePop(),
+        ),
+        title: const Text(
+          'Add Activity',
+          style: TextStyle(fontWeight: FontWeight.w700, letterSpacing: -0.4),
+        ),
+      ),
+      body: SafeArea(
+        top: false,
+        child: ActivityForm(
+          submitLabel: 'Add activity',
+          onSubmit: _createActivity,
+        ),
       ),
     );
   }

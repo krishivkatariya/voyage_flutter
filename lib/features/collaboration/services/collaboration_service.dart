@@ -112,11 +112,7 @@ class CollaborationService {
         final tripSnapshot = await _trip(tripId).get();
         final ownerId = tripSnapshot.data()?['ownerId'];
         if (ownerId == userId && tripSnapshot.exists) {
-          return TripMember(
-            userId: userId,
-            name: 'Trip owner',
-            role: 'owner',
-          );
+          return TripMember(userId: userId, name: 'Trip owner', role: 'owner');
         }
         return null;
       }

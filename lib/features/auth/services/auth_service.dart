@@ -45,15 +45,12 @@ class AuthService {
       _firestore.collection('users').doc(firebaseUser.uid),
       user.toMap(),
     );
-    batch.set(
-      _firestore.collection('userDirectory').doc(firebaseUser.uid),
-      {
-        'userId': firebaseUser.uid,
-        'email': profileEmail,
-        'emailLowercase': MemberValidators.normalizeEmail(profileEmail),
-        'name': user.name,
-      },
-    );
+    batch.set(_firestore.collection('userDirectory').doc(firebaseUser.uid), {
+      'userId': firebaseUser.uid,
+      'email': profileEmail,
+      'emailLowercase': MemberValidators.normalizeEmail(profileEmail),
+      'name': user.name,
+    });
     await batch.commit();
 
     return credential;

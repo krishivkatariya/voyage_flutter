@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:voyage_flutter/features/trips/screens/trip_details_screen.dart';
 import 'package:voyage_flutter/features/trips/services/trip_service.dart';
@@ -56,9 +55,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
 
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(content: Text(message)),
-      );
+      ..showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -146,7 +143,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
                             const SizedBox(height: 8),
                             const Text(
                               'Create your trip, choose your dates, '
-                                  'and bring your travel plans together.',
+                              'and bring your travel plans together.',
                               style: TextStyle(
                                 color: Colors.white70,
                                 height: 1.5,
@@ -164,9 +161,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(24),
-                      border: Border.all(
-                        color: const Color(0xFFEDE8FA),
-                      ),
+                      border: Border.all(color: const Color(0xFFEDE8FA)),
                       boxShadow: [
                         BoxShadow(
                           color: _createDarkPurple.withValues(alpha: 0.04),
@@ -219,10 +214,7 @@ class _CreateTripScreenState extends State<CreateTripScreen> {
                     child: Text(
                       'Your next great memory starts here. ✦',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Color(0xFF77738A),
-                        fontSize: 12,
-                      ),
+                      style: TextStyle(color: Color(0xFF77738A), fontSize: 12),
                     ),
                   ),
                   const SizedBox(height: 20),

@@ -50,16 +50,14 @@ void main() {
     });
 
     test('produces a normalized email that can be used for lookup', () {
-      final normalized =
-          MemberValidators.normalizeEmail('  USER@Example.COM  ');
+      final normalized = MemberValidators.normalizeEmail(
+        '  USER@Example.COM  ',
+      );
       expect(normalized, 'user@example.com');
       // The value a directory document stores and the value a lookup queries
       // both come from this helper, so they always match exactly.
       expect(MemberValidators.validateEmail(normalized), isNull);
-      expect(
-        MemberValidators.normalizeEmail(normalized),
-        normalized,
-      );
+      expect(MemberValidators.normalizeEmail(normalized), normalized);
     });
   });
 }

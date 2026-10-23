@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:voyage_flutter/features/trips/services/trip_service.dart';
 import 'package:voyage_flutter/features/trips/widgets/trip_form.dart';
@@ -57,9 +56,7 @@ class _EditTripScreenState extends State<EditTripScreen> {
 
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(content: Text(message)),
-      );
+      ..showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -72,10 +69,7 @@ class _EditTripScreenState extends State<EditTripScreen> {
         elevation: 0,
         title: const Text(
           'Edit Trip',
-          style: TextStyle(
-            color: _editDarkPurple,
-            fontWeight: FontWeight.w800,
-          ),
+          style: TextStyle(color: _editDarkPurple, fontWeight: FontWeight.w800),
         ),
         iconTheme: const IconThemeData(color: _editDarkPurple),
       ),
@@ -147,7 +141,7 @@ class _EditTripScreenState extends State<EditTripScreen> {
                             const SizedBox(height: 8),
                             const Text(
                               'Update your destination, dates, or '
-                                  'other details whenever plans change.',
+                              'other details whenever plans change.',
                               style: TextStyle(
                                 color: Colors.white70,
                                 height: 1.5,
@@ -165,9 +159,7 @@ class _EditTripScreenState extends State<EditTripScreen> {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(24),
-                      border: Border.all(
-                        color: const Color(0xFFEDE8FA),
-                      ),
+                      border: Border.all(color: const Color(0xFFEDE8FA)),
                       boxShadow: [
                         BoxShadow(
                           color: _editDarkPurple.withValues(alpha: 0.04),
@@ -221,10 +213,7 @@ class _EditTripScreenState extends State<EditTripScreen> {
                     child: Text(
                       'Plans change. Great adventures continue. ✦',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Color(0xFF77738A),
-                        fontSize: 12,
-                      ),
+                      style: TextStyle(color: Color(0xFF77738A), fontSize: 12),
                     ),
                   ),
                   const SizedBox(height: 20),

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:voyage_flutter/features/auth/screens/register_screen.dart';
 import 'package:voyage_flutter/features/auth/services/auth_service.dart';
@@ -50,9 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
           ..showSnackBar(
-            SnackBar(
-              content: Text(AuthService.errorMessage(error)),
-            ),
+            SnackBar(content: Text(AuthService.errorMessage(error))),
           );
       }
     } finally {
@@ -64,9 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _openRegistration() {
     Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (context) => const RegisterScreen(),
-      ),
+      MaterialPageRoute<void>(builder: (context) => const RegisterScreen()),
     );
   }
 
@@ -86,12 +81,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   vertical: 28,
                 ),
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    maxWidth: 1080,
-                  ),
-                  child: isWide
-                      ? _buildWideLayout()
-                      : _buildMobileLayout(),
+                  constraints: const BoxConstraints(maxWidth: 1080),
+                  child: isWide ? _buildWideLayout() : _buildMobileLayout(),
                 ),
               ),
             );
@@ -104,9 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildMobileLayout() {
     return Center(
       child: ConstrainedBox(
-        constraints: const BoxConstraints(
-          maxWidth: 440,
-        ),
+        constraints: const BoxConstraints(maxWidth: 440),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -125,10 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Expanded(
-          flex: 11,
-          child: _buildBrandHeader(compact: false),
-        ),
+        Expanded(flex: 11, child: _buildBrandHeader(compact: false)),
         const SizedBox(width: 48),
         Expanded(
           flex: 9,
@@ -137,9 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(28),
-              border: Border.all(
-                color: const Color(0xFFECE8F5),
-              ),
+              border: Border.all(color: const Color(0xFFECE8F5)),
               boxShadow: [
                 BoxShadow(
                   color: _loginDarkPurple.withValues(alpha: 0.06),
@@ -167,11 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
       padding: EdgeInsets.all(compact ? 25 : 34),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [
-            Color(0xFF7655F5),
-            Color(0xFF5734C9),
-            Color(0xFF39216F),
-          ],
+          colors: [Color(0xFF7655F5), Color(0xFF5734C9), Color(0xFF39216F)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -241,7 +221,7 @@ class _LoginScreenState extends State<LoginScreen> {
           const SizedBox(height: 14),
           Text(
             'Plan unforgettable journeys, organize your '
-                'itinerary, and make every trip count.',
+            'itinerary, and make every trip count.',
             style: TextStyle(
               color: Colors.white.withValues(alpha: 0.83),
               fontSize: 14,
@@ -254,9 +234,7 @@ class _LoginScreenState extends State<LoginScreen> {
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.11),
               borderRadius: BorderRadius.circular(19),
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.17),
-              ),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.17)),
             ),
             child: Row(
               children: [
@@ -292,18 +270,11 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 30),
             const Row(
               children: [
-                Icon(
-                  Icons.public_rounded,
-                  color: Color(0xFFDCD2FF),
-                  size: 18,
-                ),
+                Icon(Icons.public_rounded, color: Color(0xFFDCD2FF), size: 18),
                 SizedBox(width: 8),
                 Text(
                   'Made for travelers and explorers',
-                  style: TextStyle(
-                    color: Colors.white70,
-                    fontSize: 12,
-                  ),
+                  style: TextStyle(color: Colors.white70, fontSize: 12),
                 ),
               ],
             ),
@@ -321,11 +292,7 @@ class _LoginScreenState extends State<LoginScreen> {
         color: Colors.white.withValues(alpha: 0.17),
         borderRadius: BorderRadius.circular(14),
       ),
-      child: Icon(
-        icon,
-        color: Colors.white,
-        size: 23,
-      ),
+      child: Icon(icon, color: Colors.white, size: 23),
     );
   }
 
@@ -347,11 +314,7 @@ class _LoginScreenState extends State<LoginScreen> {
           const SizedBox(height: 9),
           const Text(
             'Sign in to continue your journey.',
-            style: TextStyle(
-              color: _loginMuted,
-              fontSize: 13,
-              height: 1.5,
-            ),
+            style: TextStyle(color: _loginMuted, fontSize: 13, height: 1.5),
           ),
           const SizedBox(height: 28),
           const Text(
@@ -376,22 +339,15 @@ class _LoginScreenState extends State<LoginScreen> {
               fillColor: const Color(0xFFFAF9FD),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15),
-                borderSide: const BorderSide(
-                  color: Color(0xFFE7E2F1),
-                ),
+                borderSide: const BorderSide(color: Color(0xFFE7E2F1)),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15),
-                borderSide: const BorderSide(
-                  color: Color(0xFFE7E2F1),
-                ),
+                borderSide: const BorderSide(color: Color(0xFFE7E2F1)),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15),
-                borderSide: const BorderSide(
-                  color: _loginPurple,
-                  width: 1.6,
-                ),
+                borderSide: const BorderSide(color: _loginPurple, width: 1.6),
               ),
             ),
             keyboardType: TextInputType.emailAddress,
@@ -419,9 +375,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 size: 21,
               ),
               suffixIcon: IconButton(
-                tooltip: _obscurePassword
-                    ? 'Show password'
-                    : 'Hide password',
+                tooltip: _obscurePassword ? 'Show password' : 'Hide password',
                 onPressed: () {
                   setState(() {
                     _obscurePassword = !_obscurePassword;
@@ -438,22 +392,15 @@ class _LoginScreenState extends State<LoginScreen> {
               fillColor: const Color(0xFFFAF9FD),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15),
-                borderSide: const BorderSide(
-                  color: Color(0xFFE7E2F1),
-                ),
+                borderSide: const BorderSide(color: Color(0xFFE7E2F1)),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15),
-                borderSide: const BorderSide(
-                  color: Color(0xFFE7E2F1),
-                ),
+                borderSide: const BorderSide(color: Color(0xFFE7E2F1)),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15),
-                borderSide: const BorderSide(
-                  color: _loginPurple,
-                  width: 1.6,
-                ),
+                borderSide: const BorderSide(color: _loginPurple, width: 1.6),
               ),
             ),
             obscureText: _obscurePassword,
@@ -469,9 +416,7 @@ class _LoginScreenState extends State<LoginScreen> {
               style: FilledButton.styleFrom(
                 backgroundColor: _loginPurple,
                 foregroundColor: Colors.white,
-                disabledBackgroundColor: _loginPurple.withValues(
-                  alpha: 0.55,
-                ),
+                disabledBackgroundColor: _loginPurple.withValues(alpha: 0.55),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
                 ),
@@ -479,30 +424,27 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               child: _isSubmitting
                   ? const SizedBox(
-                width: 22,
-                height: 22,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2.2,
-                  color: Colors.white,
-                ),
-              )
+                      width: 22,
+                      height: 22,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.2,
+                        color: Colors.white,
+                      ),
+                    )
                   : const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Sign in',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Sign in',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        SizedBox(width: 9),
+                        Icon(Icons.arrow_forward_rounded, size: 19),
+                      ],
                     ),
-                  ),
-                  SizedBox(width: 9),
-                  Icon(
-                    Icons.arrow_forward_rounded,
-                    size: 19,
-                  ),
-                ],
-              ),
             ),
           ),
         ],
@@ -515,9 +457,7 @@ class _LoginScreenState extends State<LoginScreen> {
       children: [
         Row(
           children: [
-            const Expanded(
-              child: Divider(color: Color(0xFFE7E2F1)),
-            ),
+            const Expanded(child: Divider(color: Color(0xFFE7E2F1))),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 13),
               child: Text(
@@ -530,9 +470,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
             ),
-            const Expanded(
-              child: Divider(color: Color(0xFFE7E2F1)),
-            ),
+            const Expanded(child: Divider(color: Color(0xFFE7E2F1))),
           ],
         ),
         const SizedBox(height: 13),
@@ -543,19 +481,14 @@ class _LoginScreenState extends State<LoginScreen> {
             onPressed: _isSubmitting ? null : _openRegistration,
             style: OutlinedButton.styleFrom(
               foregroundColor: _loginPurple,
-              side: const BorderSide(
-                color: Color(0xFFDCD2FF),
-              ),
+              side: const BorderSide(color: Color(0xFFDCD2FF)),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15),
               ),
             ),
             child: const Text(
               'Create an account',
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: 13,
-              ),
+              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
             ),
           ),
         ),

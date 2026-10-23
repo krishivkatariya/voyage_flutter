@@ -8,10 +8,8 @@ class DestinationSearchScreen extends StatefulWidget {
       _DestinationSearchScreenState();
 }
 
-class _DestinationSearchScreenState
-    extends State<DestinationSearchScreen> {
-  final TextEditingController searchController =
-  TextEditingController();
+class _DestinationSearchScreenState extends State<DestinationSearchScreen> {
+  final TextEditingController searchController = TextEditingController();
 
   final List<String> destinations = [
     'Ahmedabad',
@@ -38,10 +36,9 @@ class _DestinationSearchScreenState
     setState(() {
       filteredDestinations = destinations
           .where(
-            (destination) => destination
-            .toLowerCase()
-            .contains(value.toLowerCase()),
-      )
+            (destination) =>
+                destination.toLowerCase().contains(value.toLowerCase()),
+          )
           .toList();
     });
   }
@@ -49,9 +46,7 @@ class _DestinationSearchScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Search Destinations'),
-      ),
+      appBar: AppBar(title: const Text('Search Destinations')),
 
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -68,12 +63,12 @@ class _DestinationSearchScreenState
 
                 suffixIcon: searchController.text.isNotEmpty
                     ? IconButton(
-                  icon: const Icon(Icons.clear),
-                  onPressed: () {
-                    searchController.clear();
-                    searchDestination('');
-                  },
-                )
+                        icon: const Icon(Icons.clear),
+                        onPressed: () {
+                          searchController.clear();
+                          searchDestination('');
+                        },
+                      )
                     : null,
 
                 border: const OutlineInputBorder(),
@@ -85,53 +80,46 @@ class _DestinationSearchScreenState
             Expanded(
               child: filteredDestinations.isEmpty
                   ? const Center(
-                child: Text(
-                  'No destinations found',
-                  style: TextStyle(fontSize: 16),
-                ),
-              )
+                      child: Text(
+                        'No destinations found',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    )
                   : ListView.builder(
-                itemCount: filteredDestinations.length,
+                      itemCount: filteredDestinations.length,
 
-                itemBuilder: (context, index) {
-                  final destination =
-                  filteredDestinations[index];
+                      itemBuilder: (context, index) {
+                        final destination = filteredDestinations[index];
 
-                  return Card(
-                    margin:
-                    const EdgeInsets.only(bottom: 10),
+                        return Card(
+                          margin: const EdgeInsets.only(bottom: 10),
 
-                    child: ListTile(
-                      leading: const Icon(
-                        Icons.location_on,
-                      ),
+                          child: ListTile(
+                            leading: const Icon(Icons.location_on),
 
-                      title: Text(
-                        destination,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-
-                      trailing: const Icon(
-                        Icons.arrow_forward_ios,
-                        size: 16,
-                      ),
-
-                      onTap: () {
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              '$destination selected',
+                            title: Text(
+                              destination,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
+
+                            trailing: const Icon(
+                              Icons.arrow_forward_ios,
+                              size: 16,
+                            ),
+
+                            onTap: () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('$destination selected'),
+                                ),
+                              );
+                            },
                           ),
                         );
                       },
                     ),
-                  );
-                },
-              ),
             ),
           ],
         ),
